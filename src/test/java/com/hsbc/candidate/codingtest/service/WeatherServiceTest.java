@@ -1,6 +1,7 @@
 package com.hsbc.candidate.codingtest.service;
 
 import com.hsbc.candidate.codingtest.client.WeatherServiceClient;
+import com.hsbc.candidate.codingtest.exception.WeatherServiceException;
 import com.hsbc.candidate.codingtest.model.City;
 import com.hsbc.candidate.codingtest.model.WeatherResponse;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,36 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class WeatherServiceTest {
+
+    @Test
+    void fetchWeatherData_shouldReturnWeatherResponseWhenSuccessful() {
+        WeatherResponse mockResponse = new WeatherResponse();
+
+        when(weatherServiceClient.fetchWeatherData()).thenReturn(Mono.just(mockResponse));
+
+        StepVerifier.create(weatherService.fetchWeatherData())
+                .expectNext(mockResponse)
+                .verifyComplete();
+    }
+
+    @Test
+    void fetchWeatherData_shouldHandleWeatherServiceException() {
+        when(weatherServiceClient.fetchWeatherData()).thenReturn(Mono.error(new RuntimeException("Unexpected Error")));
+
+        StepVerifier.create(weatherService.fetchWeatherData())
+                .expectErrorMatches(throwable -> throwable instanceof WeatherServiceException &&
+                        "Error processing weather data in service layer".equals(throwable.getMessage()))
+                .verify();
+    }
+
+    @Test
+    void fetchWeatherData_shouldHandleNullResponse() {
+        when(weatherServiceClient.fetchWeatherData()).thenReturn(Mono.empty());
+
+        StepVerifier.create(weatherService.fetchWeatherData())
+                .expectComplete()
+                .verify();
+    }
 
     @Mock
     private WeatherServiceClient weatherServiceClient;
