@@ -28,7 +28,7 @@ public class WeatherControllerTest {
     public void setup() {
         MockitoAnnotations.openMocks(this);
         webTestClient = WebTestClient
-                .bindToController( new WeatherController(weatherService))
+                .bindToController(new WeatherController(weatherService))
                 .controllerAdvice(new GlobalExceptionHandler())
                 .build();
     }

@@ -50,7 +50,7 @@ class WeatherServiceClientTest {
     }
 
     @Test
-    void fetchWeatherData_shouldReturnWeatherResponse() {
+    void fetchWeatherDataShouldReturnWeatherResponse() {
         // Given
         WeatherResponse mockResponse = new WeatherResponse();
         mockResponse.setCod("200");
@@ -66,7 +66,7 @@ class WeatherServiceClientTest {
     }
 
     @Test
-    void fetchWeatherData_shouldWrapWebClientResponseExceptionAsWeatherServiceException() {
+    void fetchWeatherDataShouldWrapWebClientResponseExceptionAsWeatherServiceException() {
         // Given
         WebClientResponseException exception = new WebClientResponseException(
                 500, "Internal Server Error", null, null, null);
@@ -81,7 +81,7 @@ class WeatherServiceClientTest {
     }
 
     @Test
-    void fetchWeatherData_shouldWrapUnknownErrorsAsCityLetterFinderSystemException() {
+    void fetchWeatherDataShouldWrapUnknownErrorsAsCityLetterFinderSystemException() {
         // Given
         RuntimeException unknownException = new RuntimeException("Unknown error");
 

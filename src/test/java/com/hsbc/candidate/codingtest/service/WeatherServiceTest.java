@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 class WeatherServiceTest {
 
     @Test
-    void fetchWeatherData_shouldReturnWeatherResponseWhenSuccessful() {
+    void fetchWeatherDataShouldReturnWeatherResponseWhenSuccessful() {
         WeatherResponse mockResponse = new WeatherResponse();
 
         when(weatherServiceClient.fetchWeatherData()).thenReturn(Mono.just(mockResponse));
@@ -32,7 +32,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void fetchWeatherData_shouldHandleWeatherServiceException() {
+    void fetchWeatherDataShouldHandleWeatherServiceException() {
         when(weatherServiceClient.fetchWeatherData()).thenReturn(Mono.error(new RuntimeException("Unexpected Error")));
 
         StepVerifier.create(weatherService.fetchWeatherData())
@@ -42,7 +42,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void fetchWeatherData_shouldHandleNullResponse() {
+    void fetchWeatherDataShouldHandleNullResponse() {
         when(weatherServiceClient.fetchWeatherData()).thenReturn(Mono.empty());
 
         StepVerifier.create(weatherService.fetchWeatherData())
@@ -57,7 +57,7 @@ class WeatherServiceTest {
     private WeatherService weatherService;
 
     @Test
-    void countCitiesStartingWith_shouldReturnCorrectCount() {
+    void countCitiesStartingWithShouldReturnCorrectCount() {
         WeatherResponse mockResponse = new WeatherResponse();
         List<City> cities = Arrays.asList(
                 createCity("Zuwarah"),
@@ -84,7 +84,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void getCitiesStartingWith_shouldReturnCorrectCities() {
+    void getCitiesStartingWithShouldReturnCorrectCities() {
         WeatherResponse mockResponse = new WeatherResponse();
         List<City> cities = Arrays.asList(
                 createCity("Zuwarah"),
@@ -111,7 +111,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void countCitiesStartingWith_shouldHandleNullOrEmptyInput() {
+    void countCitiesStartingWithShouldHandleNullOrEmptyInput() {
         StepVerifier.create(weatherService.countCitiesStartingWith(null))
                 .expectNext(0L)
                 .verifyComplete();
@@ -122,7 +122,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void getCitiesStartingWith_shouldHandleNullOrEmptyInput() {
+    void getCitiesStartingWithShouldHandleNullOrEmptyInput() {
         StepVerifier.create(weatherService.getCitiesStartingWith(null))
                 .expectNext(List.of())
                 .verifyComplete();
