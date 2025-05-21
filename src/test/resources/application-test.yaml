@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: city-letter-finder-test
+weather:
+  api:
+    # In the test profile, these values will be overridden by the TestConfiguration
+    # but we still need to provide them for the application to start
+    base-url: http://localhost:8089/data/2.5/box/city
+    appid: test-api-key
+    bbox:
+      lon-left: 12
+      lat-bottom: 32
+      lon-right: 15
+      lat-top: 37
+      zoom: 10
