@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Letter Finder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>City Letter Finder</h1>
+        <p>Enter a letter to see how many cities start with that letter</p>
+
+        <div class="input-container">
+            <input type="text" id="letterInput" maxlength="1" placeholder="Enter a letter">
+            <button id="searchButton">Search</button>
+            <button id="clearButton" class="secondary-button">Clear</button>
+        </div>
+        <div id="validationMessage" class="validation-message hidden"></div>
+
+        <div class="result-container">
+            <div id="loading" class="hidden">Loading...</div>
+            <div id="result" class="hidden">
+                <p>Number of cities starting with "<span id="searchedLetter"></span>": <span id="cityCount">0</span></p>
+            </div>
+            <div id="cityList" class="hidden">
+                <h3>Cities:</h3>
+                <ul id="cities"></ul>
+            </div>
+            <div id="error" class="hidden">
+                <p>Error: <span id="errorMessage"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: city-letter-finder
+weather:
+  api:
+    # bbox parameter explanation:
+    # bbox=lon-left,lat-bottom,lon-right,lat-top,zoom
+    # This defines a rectangular geographical area (bounding box) from which to retrieve weather data for cities
+    # lon-left: longitude of the left/westernmost edge
+    # lat-bottom: latitude of the bottom/southernmost edge
+    # lon-right: longitude of the right/easternmost edge
+    # lat-top: latitude of the top/northernmost edge
+    # zoom: map zoom level, affects the number of cities returned
+    # Default values cover parts of North Africa, primarily Libya
+    base-url: https://samples.openweathermap.org/data/2.5/box/city
+    appid: b6907d289e10d714a6e88b30761fae22
+    bbox:
+      lon-left: 12
+      lat-bottom: 32
+      lon-right: 15
+      lat-top: 37
+      zoom: 10
