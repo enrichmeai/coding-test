@@ -1,6 +1,5 @@
 package com.hsbc.candidate.codingtest.controller;
 
-import com.hsbc.candidate.codingtest.exception.ErrorResponse;
 import com.hsbc.candidate.codingtest.exception.GlobalExceptionHandler;
 import com.hsbc.candidate.codingtest.exception.WeatherServiceException;
 import com.hsbc.candidate.codingtest.model.City;
@@ -17,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class WeatherControllerTest {
 

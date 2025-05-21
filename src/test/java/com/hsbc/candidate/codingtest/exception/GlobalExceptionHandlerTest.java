@@ -5,18 +5,13 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.test.StepVerifier;
 
-import java.time.LocalDateTime;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
-
-import com.hsbc.candidate.codingtest.exception.SystemException;
 
 @SpringBootTest
 class GlobalExceptionHandlerTest {
@@ -35,6 +30,7 @@ class GlobalExceptionHandlerTest {
         StepVerifier.create(globalExceptionHandler.handleApplicationException(applicationException, webRequest))
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
+                    assert errorResponse != null;
                     assertEquals(errorCode, errorResponse.getErrorCode());
                     assertEquals(errorMessage, errorResponse.getMessage());
                     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus());
@@ -60,6 +56,7 @@ class GlobalExceptionHandlerTest {
         StepVerifier.create(globalExceptionHandler.handleWebClientResponseException(exception, webRequest))
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
+                    assert errorResponse != null;
                     assertEquals("EXTERNAL_SERVICE_ERROR", errorResponse.getErrorCode());
                     assertEquals("Error from external service: 503 Service Unavailable", errorResponse.getMessage());
                     assertEquals(HttpStatus.SERVICE_UNAVAILABLE.value(), errorResponse.getStatus());
@@ -79,6 +76,7 @@ class GlobalExceptionHandlerTest {
         StepVerifier.create(globalExceptionHandler.handleResponseStatusException(exception, webRequest))
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
+                    assert errorResponse != null;
                     assertEquals("HTTP_ERROR", errorResponse.getErrorCode());
                     assertEquals(reason, errorResponse.getMessage());
                     assertEquals(HttpStatus.NOT_FOUND.value(), errorResponse.getStatus());
@@ -98,6 +96,7 @@ class GlobalExceptionHandlerTest {
         StepVerifier.create(globalExceptionHandler.handleGlobalException(globalException, webRequest))
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
+                    assert errorResponse != null;
                     assertEquals("INTERNAL_SERVER_ERROR", errorResponse.getErrorCode());
                     assertEquals("An unexpected error occurred", errorResponse.getMessage());
                     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus());
@@ -117,6 +116,7 @@ class GlobalExceptionHandlerTest {
         StepVerifier.create(globalExceptionHandler.handleThrowableException(throwable, webRequest))
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
+                    assert errorResponse != null;
                     assertEquals("UNHANDLED_ERROR", errorResponse.getErrorCode());
                     assertEquals("An unexpected error occurred", errorResponse.getMessage());
                     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus());
