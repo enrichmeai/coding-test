@@ -13,6 +13,10 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 
+/**
+ * A client for interacting with an external weather service to fetch weather data.
+ * This class utilizes a reactive approach with WebClient for making HTTP requests.
+ */
 @Component
 @Slf4j
 public class WeatherServiceClient {

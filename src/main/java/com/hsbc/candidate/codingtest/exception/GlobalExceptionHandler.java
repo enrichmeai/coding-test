@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
@@ -27,7 +28,7 @@ public class GlobalExceptionHandler {
      * @return a ResponseEntity containing an ErrorResponse
      */
     @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException ex, WebRequest request) {
+    public Mono<ResponseEntity<ErrorResponse>> handleApplicationException(ApplicationException ex, WebRequest request) {
         log.error("Application exception: {}", ex.getMessage(), ex);
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
                 .path(request.getDescription(false).replace("uri=", ""))
                 .build();
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return Mono.just(new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     /**
@@ -49,7 +50,7 @@ public class GlobalExceptionHandler {
      * @return a ResponseEntity containing an ErrorResponse
      */
     @ExceptionHandler(WebClientResponseException.class)
-    public ResponseEntity<ErrorResponse> handleWebClientResponseException(WebClientResponseException ex, WebRequest request) {
+    public Mono<ResponseEntity<ErrorResponse>> handleWebClientResponseException(WebClientResponseException ex, WebRequest request) {
         log.error("WebClient response exception: {}", ex.getMessage(), ex);
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -60,7 +61,7 @@ public class GlobalExceptionHandler {
                 .path(request.getDescription(false).replace("uri=", ""))
                 .build();
 
-        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
+        return Mono.just(new ResponseEntity<>(errorResponse, ex.getStatusCode()));
     }
 
     /**
@@ -71,7 +72,7 @@ public class GlobalExceptionHandler {
      * @return a ResponseEntity containing an ErrorResponse
      */
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
+    public Mono<ResponseEntity<ErrorResponse>> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
         log.error("Response status exception: {}", ex.getMessage(), ex);
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -82,7 +83,7 @@ public class GlobalExceptionHandler {
                 .path(request.getDescription(false).replace("uri=", ""))
                 .build();
 
-        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
+        return Mono.just(new ResponseEntity<>(errorResponse, ex.getStatusCode()));
     }
 
     /**
@@ -92,8 +93,8 @@ public class GlobalExceptionHandler {
      * @param request the web request
      * @return a ResponseEntity containing an ErrorResponse
      */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
+    @ExceptionHandler(SystemException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleGlobalException(Exception ex, WebRequest request) {
         log.error("Unhandled exception: {}", ex.getMessage(), ex);
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -105,6 +106,28 @@ public class GlobalExceptionHandler {
                 .path(request.getDescription(false).replace("uri=", ""))
                 .build();
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return Mono.just(new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    /**
+     * Handles Throwable exceptions.
+     *
+     * @param throwable the exception
+     * @param request   the web request
+     * @return a ResponseEntity containing an ErrorResponse
+     */
+    @ExceptionHandler(Throwable.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleThrowableException(Throwable throwable, WebRequest request) {
+        log.error("Unhandled throwable: {}", throwable.getMessage(), throwable);
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .errorCode("UNHANDLED_ERROR")
+                .message("An unexpected error occurred")
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return Mono.just(new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }

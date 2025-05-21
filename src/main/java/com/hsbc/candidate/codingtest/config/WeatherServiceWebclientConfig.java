@@ -18,6 +18,12 @@ public class WeatherServiceWebclientConfig {
 
     private final OpenWeatherApiBboxConfig bboxConfig;
 
+    /**
+     * Creates a {@link WebClient} bean for interacting with the OpenWeather API.
+     *
+     * @param webClientBuilder the builder used to configure and construct the {@link WebClient}
+     * @return a configured {@link WebClient} instance
+     */
     @Bean(name = "openWeatherApiWebClient")
     public WebClient weatherServiceWebClient(WebClient.Builder webClientBuilder) {
         return webClientBuilder.build();

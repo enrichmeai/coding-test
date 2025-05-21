@@ -19,6 +19,13 @@ public class WeatherService {
 
     private final WeatherServiceClient weatherServiceClient;
 
+    /**
+     * Fetches weather data by communicating with the weather service client.
+     * Handles unexpected errors by mapping them to a WeatherServiceException.
+     *
+     * @return a {@code Mono} containing the weather data in a {@code WeatherResponse} object,
+     *         or an error if the operation fails.
+     */
     public Mono<WeatherResponse> fetchWeatherData() {
         return weatherServiceClient.fetchWeatherData()
                 .onErrorMap(e -> !(e instanceof WeatherServiceException), e -> {
@@ -31,6 +38,13 @@ public class WeatherService {
                 });
     }
 
+    /**
+     * Counts the number of cities whose names start with the given letter.
+     *
+     * @param letter the starting letter to filter city names; if null or empty, the method returns 0.
+     * @return a {@code Mono} emitting the count of cities whose names start with the specified letter,
+     *         or 0 if no such cities exist.
+     */
     public Mono<Long> countCitiesStartingWith(String letter) {
         if (letter == null || letter.isEmpty()) {
             return Mono.just(0L);
@@ -54,6 +68,14 @@ public class WeatherService {
                 });
     }
 
+    /**
+     * Retrieves a list of city names starting with the specified letter.
+     * If no cities match or the input letter is null/empty, an empty list is returned.
+     *
+     * @param letter the starting letter to filter city names; should not be null or empty.
+     * @return a {@code Mono} emitting a list of city names that start with the specified letter,
+     *         or an empty list if no such cities exist or data is unavailable.
+     */
     public Mono<List<String>> getCitiesStartingWith(String letter) {
         if (letter == null || letter.isEmpty()) {
             return Mono.just(List.of());
