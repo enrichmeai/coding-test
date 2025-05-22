@@ -48,8 +48,7 @@ public class WeatherController {
     public Mono<ResponseEntity<WeatherResponse>> getAllWeatherData() {
         log.info("Received request to get all weather data");
         return weatherService.fetchWeatherData()
-                .map(ResponseEntity::ok)
-                .doOnError(e -> log.error("Error in getAllWeatherData endpoint", e));
+                .map(ResponseEntity::ok);
     }
 
     /**
@@ -65,8 +64,7 @@ public class WeatherController {
             @RequestParam @Pattern(regexp = "^[a-zA-Z]$", message = "Letter must be a single alphabetic character") String letter) {
         log.info("Received request to count cities starting with: {}", letter);
         return weatherService.countCitiesStartingWith(letter)
-                .map(count -> ResponseEntity.ok(Map.of("count", count)))
-                .doOnError(e -> log.error("Error in countCitiesStartingWith endpoint with letter: {}", letter, e));
+                .map(count -> ResponseEntity.ok(Map.of("count", count)));
     }
 
     /**
@@ -82,7 +80,6 @@ public class WeatherController {
             @RequestParam @Pattern(regexp = "^[a-zA-Z]$", message = "Letter must be a single alphabetic character") String letter) {
         log.info("Received request to get cities starting with: {}", letter);
         return weatherService.getCitiesStartingWith(letter)
-                .map(ResponseEntity::ok)
-                .doOnError(e -> log.error("Error in getCitiesStartingWith endpoint with letter: {}", letter, e));
+                .map(ResponseEntity::ok);
     }
 }
