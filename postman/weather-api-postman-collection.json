@@ -1,0 +1,66 @@
+{
+  "info": {
+    "name": "Weather API",
+    "description": "Collection for testing the Weather API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Weather Data",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/weather",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "weather"]
+        },
+        "description": "Retrieves all weather data from the API"
+      },
+      "response": []
+    },
+    {
+      "name": "Count Cities Starting With Letter",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/weather/cities/count?letter=Z",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "weather", "cities", "count"],
+          "query": [
+            {
+              "key": "letter",
+              "value": "Z"
+            }
+          ]
+        },
+        "description": "Counts the number of cities starting with a specific letter"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Cities Starting With Letter",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/weather/cities?letter=T",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "weather", "cities"],
+          "query": [
+            {
+              "key": "letter",
+              "value": "T"
+            }
+          ]
+        },
+        "description": "Retrieves a list of cities starting with a specific letter"
+      },
+      "response": []
+    }
+  ]
+}

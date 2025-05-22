@@ -62,6 +62,15 @@ The application provides the following REST API endpoints:
 - `GET /api/weather/cities/count?letter={letter}` - Returns the count of cities starting with the given letter
 - `GET /api/weather/cities?letter={letter}` - Returns a list of city names starting with the given letter
 
+### Postman Collection
+
+A Postman collection is available to help you test the API endpoints. The collection is located in the `postman` directory of the project.
+
+To use the collection:
+1. Import the file `postman/weather-api-postman-collection.json` into Postman
+2. Ensure the application is running
+3. Execute the requests in the collection to test the API endpoints
+
 ## Technology Stack
 
 - Backend: Java 17, Spring Boot 3.4.5

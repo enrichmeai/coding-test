@@ -145,81 +145,82 @@ public class WeatherApiIntegrationTest {
          * This response includes two cities: Zuwarah and Tripoli.
          */
         private String createSampleWeatherResponse() {
-            return "{\n" +
-                    "  \"cod\": \"200\",\n" +
-                    "  \"calctime\": 0.0032,\n" +
-                    "  \"cnt\": 2,\n" +
-                    "  \"list\": [\n" +
-                    "    {\n" +
-                    "      \"id\": 2208425,\n" +
-                    "      \"name\": \"Zuwarah\",\n" +
-                    "      \"coord\": {\n" +
-                    "        \"lon\": 12.08199,\n" +
-                    "        \"lat\": 32.931198\n" +
-                    "      },\n" +
-                    "      \"main\": {\n" +
-                    "        \"temp\": 293.25,\n" +
-                    "        \"temp_min\": 293.15,\n" +
-                    "        \"temp_max\": 293.45,\n" +
-                    "        \"pressure\": 1023,\n" +
-                    "        \"sea_level\": 1023,\n" +
-                    "        \"grnd_level\": 1023,\n" +
-                    "        \"humidity\": 100\n" +
-                    "      },\n" +
-                    "      \"dt\": 1560350192,\n" +
-                    "      \"wind\": {\n" +
-                    "        \"speed\": 3.1,\n" +
-                    "        \"deg\": 209\n" +
-                    "      },\n" +
-                    "      \"rain\": null,\n" +
-                    "      \"clouds\": {\n" +
-                    "        \"all\": 0\n" +
-                    "      },\n" +
-                    "      \"weather\": [\n" +
-                    "        {\n" +
-                    "          \"id\": 800,\n" +
-                    "          \"main\": \"Clear\",\n" +
-                    "          \"description\": \"clear sky\",\n" +
-                    "          \"icon\": \"01d\"\n" +
-                    "        }\n" +
-                    "      ]\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "      \"id\": 2210247,\n" +
-                    "      \"name\": \"Tripoli\",\n" +
-                    "      \"coord\": {\n" +
-                    "        \"lon\": 13.18746,\n" +
-                    "        \"lat\": 32.875191\n" +
-                    "      },\n" +
-                    "      \"main\": {\n" +
-                    "        \"temp\": 292.15,\n" +
-                    "        \"temp_min\": 292.15,\n" +
-                    "        \"temp_max\": 292.15,\n" +
-                    "        \"pressure\": 1023,\n" +
-                    "        \"sea_level\": 1023,\n" +
-                    "        \"grnd_level\": 1023,\n" +
-                    "        \"humidity\": 100\n" +
-                    "      },\n" +
-                    "      \"dt\": 1560350192,\n" +
-                    "      \"wind\": {\n" +
-                    "        \"speed\": 3.1,\n" +
-                    "        \"deg\": 209\n" +
-                    "      },\n" +
-                    "      \"rain\": null,\n" +
-                    "      \"clouds\": {\n" +
-                    "        \"all\": 0\n" +
-                    "      },\n" +
-                    "      \"weather\": [\n" +
-                    "        {\n" +
-                    "          \"id\": 800,\n" +
-                    "          \"main\": \"Clear\",\n" +
-                    "          \"description\": \"clear sky\",\n" +
-                    "          \"icon\": \"01d\"\n" +
-                    "        }\n" +
-                    "      ]\n" +
-                    "    }\n" +
-                    "  ]\n" +
-                    "}";
+            return """
+                    {
+                      "cod": "200",
+                      "calctime": 0.0032,
+                      "cnt": 2,
+                      "list": [
+                        {
+                          "id": 2208425,
+                          "name": "Zuwarah",
+                          "coord": {
+                            "lon": 12.08199,
+                            "lat": 32.931198
+                          },
+                          "main": {
+                            "temp": 293.25,
+                            "temp_min": 293.15,
+                            "temp_max": 293.45,
+                            "pressure": 1023,
+                            "sea_level": 1023,
+                            "grnd_level": 1023,
+                            "humidity": 100
+                          },
+                          "dt": 1560350192,
+                          "wind": {
+                            "speed": 3.1,
+                            "deg": 209
+                          },
+                          "rain": null,
+                          "clouds": {
+                            "all": 0
+                          },
+                          "weather": [
+                            {
+                              "id": 800,
+                              "main": "Clear",
+                              "description": "clear sky",
+                              "icon": "01d"
+                            }
+                          ]
+                        },
+                        {
+                          "id": 2210247,
+                          "name": "Tripoli",
+                          "coord": {
+                            "lon": 13.18746,
+                            "lat": 32.875191
+                          },
+                          "main": {
+                            "temp": 292.15,
+                            "temp_min": 292.15,
+                            "temp_max": 292.15,
+                            "pressure": 1023,
+                            "sea_level": 1023,
+                            "grnd_level": 1023,
+                            "humidity": 100
+                          },
+                          "dt": 1560350192,
+                          "wind": {
+                            "speed": 3.1,
+                            "deg": 209
+                          },
+                          "rain": null,
+                          "clouds": {
+                            "all": 0
+                          },
+                          "weather": [
+                            {
+                              "id": 800,
+                              "main": "Clear",
+                              "description": "clear sky",
+                              "icon": "01d"
+                            }
+                          ]
+                        }
+                      ]
+                    }""";
         }
     }
 }

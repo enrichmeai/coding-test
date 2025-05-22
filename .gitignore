@@ -66,7 +66,8 @@ $RECYCLE.BIN/
 node_modules/
 npm-debug.log
 yarn-error.log
-package-lock.json
+# package-lock.json should be committed to ensure consistent installations
+# package-lock.json
 yarn.lock
 
 ### Maven ###
@@ -138,6 +139,7 @@ logs/
 # Large data files
 *.csv
 *.json
+!postman/*.json
 *.xml
 *.dat
 *.bak
