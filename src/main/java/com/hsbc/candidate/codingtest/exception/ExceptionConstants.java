@@ -33,8 +33,22 @@ public enum ExceptionConstants {
     SYSTEM_TIMEOUT("SYSTEM_TIMEOUT", HttpStatus.GATEWAY_TIMEOUT, "System timeout: %s"),
     GENERAL_SYSTEM_ERROR("GENERAL_SYSTEM_ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "System error: %s");
 
+    /**
+     * The error code that uniquely identifies this exception type.
+     * This code is used in error responses and can be used by clients to identify the error.
+     */
     private final String errorCode;
+
+    /**
+     * The HTTP status code that should be returned when this exception occurs.
+     * This determines the HTTP response status in the API response.
+     */
     private final HttpStatus httpStatus;
+
+    /**
+     * The message template with placeholders for dynamic parameters.
+     * This template is used to generate the error message with specific details.
+     */
     private final String messageTemplate;
 
     /**

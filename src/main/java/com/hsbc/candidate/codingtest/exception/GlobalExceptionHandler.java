@@ -55,10 +55,7 @@ public class GlobalExceptionHandler {
      */
     private static final String HTTP_ERROR_CODE = "HTTP_ERROR";
 
-    /**
-     * Error code for system errors.
-     */
-    private static final String SYSTEM_ERROR_CODE = "SYSTEM_ERROR";
+
 
     /**
      * Handles ApplicationException by creating an appropriate error response.

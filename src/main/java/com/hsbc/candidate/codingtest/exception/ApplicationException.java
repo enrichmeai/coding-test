@@ -3,6 +3,8 @@ package com.hsbc.candidate.codingtest.exception;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serial;
+
 /**
  * Base exception class for application-specific exceptions.
  * This class provides a consistent way to include error codes and HTTP status codes in exceptions.
@@ -10,9 +12,22 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class ApplicationException extends RuntimeException {
 
+    /**
+     * Serial version UID for serialization compatibility.
+     */
+    @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The application-specific error code that identifies the type of error.
+     * This code can be used by clients to handle specific error scenarios.
+     */
     private final String errorCode;
+
+    /**
+     * The HTTP status code that should be returned to the client.
+     * This determines the HTTP response status when this exception is handled.
+     */
     private final HttpStatus httpStatus;
 
     /**

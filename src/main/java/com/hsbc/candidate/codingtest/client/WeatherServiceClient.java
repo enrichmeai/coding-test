@@ -51,6 +51,14 @@ public class WeatherServiceClient {
         this.apiUrl = weatherApiUrl;
     }
 
+    /**
+     * Fetches weather data from the external weather service API.
+     * This method makes a GET request to the configured API URL and deserializes
+     * the response into a WeatherResponse object. It includes retry logic for
+     * handling transient failures.
+     *
+     * @return a Mono emitting the weather data response
+     */
     public Mono<WeatherResponse> fetchWeatherData() {
         return webClient.get()
                 .uri(apiUrl)
@@ -59,6 +67,14 @@ public class WeatherServiceClient {
                 .retryWhen(createRetrySpec());
     }
 
+    /**
+     * Creates a retry specification for handling transient failures in API calls.
+     * This method configures a fixed delay retry strategy that will retry failed
+     * requests a specified number of times with a fixed delay between attempts.
+     * Only WebClientResponseException errors will trigger retries.
+     *
+     * @return a configured Retry specification
+     */
     private Retry createRetrySpec() {
         return Retry.fixedDelay(RETRY_ATTEMPTS, RETRY_DELAY)
                 .filter(throwable -> throwable instanceof WebClientResponseException)

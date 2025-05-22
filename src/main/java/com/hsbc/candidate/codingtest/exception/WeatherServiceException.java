@@ -2,12 +2,15 @@ package com.hsbc.candidate.codingtest.exception;
 
 import org.springframework.http.HttpStatus;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when there is an error related to the weather service.
  * This class uses the ExceptionConstants enum for error codes, HTTP status codes, and message templates.
  */
 public class WeatherServiceException extends ApplicationException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

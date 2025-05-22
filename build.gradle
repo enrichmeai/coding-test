@@ -82,14 +82,14 @@ pmd {
     ruleSets = []
 }
 
-tasks.withType(Checkstyle) {
+tasks.withType(Checkstyle).configureEach {
     reports {
         xml.required = true
         html.required = true
     }
 }
 
-tasks.withType(Pmd) {
+tasks.withType(Pmd).configureEach {
     reports {
         xml.required = true
         html.required = true
