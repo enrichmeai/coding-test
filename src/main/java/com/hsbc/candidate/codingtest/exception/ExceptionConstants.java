@@ -64,24 +64,5 @@ public enum ExceptionConstants {
         this.messageTemplate = messageTemplate;
     }
 
-    /**
-     * Creates an ApplicationException with this error type.
-     *
-     * @param params the parameters to be substituted in the message template
-     * @return a new ApplicationException
-     */
-    public ApplicationException createException(Object... params) {
-        return new ApplicationException(errorCode, messageTemplate, httpStatus, params);
-    }
 
-    /**
-     * Creates an ApplicationException with this error type and a cause.
-     *
-     * @param cause the cause of the exception
-     * @param params the parameters to be substituted in the message template
-     * @return a new ApplicationException
-     */
-    public ApplicationException createException(Throwable cause, Object... params) {
-        return new ApplicationException(errorCode, messageTemplate, httpStatus, cause, params);
-    }
 }

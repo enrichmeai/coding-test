@@ -1,7 +1,5 @@
 package com.hsbc.candidate.codingtest.exception;
 
-import org.springframework.http.HttpStatus;
-
 import java.io.Serial;
 
 /**
@@ -34,26 +32,5 @@ public class WeatherServiceException extends ApplicationException {
         super(exceptionType.getErrorCode(), exceptionType.getMessageTemplate(), exceptionType.getHttpStatus(), cause, params);
     }
 
-    /**
-     * Constructs a new weather service exception with the specified error code, message, and HTTP status.
-     *
-     * @param errorCode the error code
-     * @param message the detail message
-     * @param httpStatus the HTTP status code
-     */
-    public WeatherServiceException(String errorCode, String message, HttpStatus httpStatus) {
-        super(errorCode, message, httpStatus);
-    }
 
-    /**
-     * Constructs a new weather service exception with the specified error code, message, HTTP status, and cause.
-     *
-     * @param errorCode the error code
-     * @param message the detail message
-     * @param httpStatus the HTTP status code
-     * @param cause the cause of the exception
-     */
-    public WeatherServiceException(String errorCode, String message, HttpStatus httpStatus, Throwable cause) {
-        super(errorCode, message, httpStatus, cause);
-    }
 }

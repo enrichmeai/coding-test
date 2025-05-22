@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  */
 @ControllerAdvice
 @Slf4j
+@SuppressWarnings("PMD.TooManyMethods") // This class needs multiple methods to handle different exception types
 public class GlobalExceptionHandler {
 
     /**

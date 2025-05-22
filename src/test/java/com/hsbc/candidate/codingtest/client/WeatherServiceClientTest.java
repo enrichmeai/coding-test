@@ -16,27 +16,54 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+/**
+ * Unit tests for the WeatherServiceClient class.
+ * These tests verify that the client correctly interacts with the WebClient
+ * to fetch weather data and handles errors appropriately.
+ */
 @ExtendWith(MockitoExtension.class)
 class WeatherServiceClientTest {
 
+    /**
+     * Mock WebClient.Builder used to create the WebClient.
+     */
     @Mock
     private WebClient.Builder webClientBuilder;
 
+    /**
+     * Mock WebClient used to make HTTP requests.
+     */
     @Mock
     private WebClient webClient;
 
+    /**
+     * Mock request headers URI specification for configuring the request URI.
+     */
     @Mock
     private WebClient.RequestHeadersUriSpec requestHeadersUriSpec;
 
+    /**
+     * Mock request headers specification for configuring request headers.
+     */
     @Mock
     private WebClient.RequestHeadersSpec requestHeadersSpec;
 
+    /**
+     * Mock response specification for handling the response.
+     */
     @Mock
     private WebClient.ResponseSpec responseSpec;
 
+    /**
+     * The WeatherServiceClient instance being tested.
+     */
     @InjectMocks
     private WeatherServiceClient weatherServiceClient;
 
+    /**
+     * Sets up the test environment before each test.
+     * Configures the mock WebClient chain and creates a new WeatherServiceClient instance.
+     */
     @BeforeEach
     void setUp() {
         lenient().when(webClientBuilder.build()).thenReturn(webClient);
@@ -47,6 +74,10 @@ class WeatherServiceClientTest {
         weatherServiceClient = new WeatherServiceClient(webClient, "https://test-api-url");
     }
 
+    /**
+     * Tests that fetchWeatherData successfully returns a WeatherResponse when the API call succeeds.
+     * This test uses StepVerifier for reactive stream assertions instead of traditional JUnit assertions.
+     */
     @Test
     void fetchWeatherDataShouldReturnWeatherResponse() {
         // Given
@@ -63,6 +94,10 @@ class WeatherServiceClientTest {
                 .verifyComplete();
     }
 
+    /**
+     * Tests that fetchWeatherData properly propagates WebClientResponseException when the API call fails.
+     * This test uses StepVerifier for reactive stream assertions instead of traditional JUnit assertions.
+     */
     @Test
     void fetchWeatherDataShouldPropagateWebClientResponseException() {
         // Given
@@ -77,6 +112,10 @@ class WeatherServiceClientTest {
                 .verify();
     }
 
+    /**
+     * Tests that fetchWeatherData properly propagates unknown errors when they occur.
+     * This test uses StepVerifier for reactive stream assertions instead of traditional JUnit assertions.
+     */
     @Test
     void fetchWeatherDataShouldPropagateUnknownErrors() {
         // Given

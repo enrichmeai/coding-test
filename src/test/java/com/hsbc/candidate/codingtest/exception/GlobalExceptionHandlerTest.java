@@ -22,12 +22,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * Integration tests for the GlobalExceptionHandler class.
+ * These tests verify that the exception handler correctly processes different types of exceptions
+ * and returns appropriate error responses with the correct status codes and error messages.
+ * The tests use StepVerifier for reactive stream assertions.
+ */
 @SpringBootTest
 class GlobalExceptionHandlerTest {
 
+    /**
+     * The GlobalExceptionHandler instance being tested.
+     * This is autowired by Spring to inject the actual bean from the application context.
+     */
     @Autowired
     private GlobalExceptionHandler globalExceptionHandler;
 
+    /**
+     * Tests that handleApplicationException correctly processes an ApplicationException
+     * and returns an appropriate error response with the correct status code and error message.
+     * This test uses StepVerifier for reactive stream assertions.
+     */
     @Test
     void testHandleApplicationException() {
         String errorCode = "APP_ERROR";
@@ -44,15 +59,20 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals(errorCode, errorResponse.getErrorCode());
-                    assertEquals(errorMessage, errorResponse.getMessage());
-                    assertEquals(httpStatus.value(), errorResponse.getStatus());
-                    assertEquals("/some-endpoint", errorResponse.getPath());
-                    assertEquals(httpStatus, responseEntity.getStatusCode());
+                    assertEquals(errorCode, errorResponse.getErrorCode(), "Error code should match the one from the exception");
+                    assertEquals(errorMessage, errorResponse.getMessage(), "Error message should match the one from the exception");
+                    assertEquals(httpStatus.value(), errorResponse.getStatus(), "HTTP status code should match the one from the exception");
+                    assertEquals("/some-endpoint", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(httpStatus, responseEntity.getStatusCode(), "Response entity status code should match the one from the exception");
                 })
                 .verifyComplete();
     }
 
+    /**
+     * Tests that handleApplicationException correctly processes an ApplicationException with a message template
+     * and returns an appropriate error response with the formatted message.
+     * This test uses StepVerifier for reactive stream assertions.
+     */
     @Test
     void testHandleApplicationExceptionWithMessageTemplate() {
         String errorCode = "VALIDATION_ERROR";
@@ -72,15 +92,20 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals(errorCode, errorResponse.getErrorCode());
-                    assertEquals(expectedMessage, errorResponse.getMessage());
-                    assertEquals(httpStatus.value(), errorResponse.getStatus());
-                    assertEquals("/validation-endpoint", errorResponse.getPath());
-                    assertEquals(httpStatus, responseEntity.getStatusCode());
+                    assertEquals(errorCode, errorResponse.getErrorCode(), "Error code should match the one from the exception");
+                    assertEquals(expectedMessage, errorResponse.getMessage(), "Error message should be formatted with the parameter value");
+                    assertEquals(httpStatus.value(), errorResponse.getStatus(), "HTTP status code should match the one from the exception");
+                    assertEquals("/validation-endpoint", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(httpStatus, responseEntity.getStatusCode(), "Response entity status code should match the one from the exception");
                 })
                 .verifyComplete();
     }
 
+    /**
+     * Tests that handleWebClientResponseException correctly processes a WebClientResponseException
+     * and returns an appropriate error response with the external service error details.
+     * This test uses StepVerifier for reactive stream assertions.
+     */
     @Test
     void testHandleWebClientResponseException() {
         String externalErrorMessage = "Service Unavailable";
@@ -101,15 +126,20 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals("EXTERNAL_SERVICE_ERROR", errorResponse.getErrorCode());
-                    assertEquals("Error from external service: 503 Service Unavailable", errorResponse.getMessage());
-                    assertEquals(HttpStatus.SERVICE_UNAVAILABLE.value(), errorResponse.getStatus());
-                    assertEquals("/external-api", errorResponse.getPath());
-                    assertEquals(HttpStatus.SERVICE_UNAVAILABLE, responseEntity.getStatusCode());
+                    assertEquals("EXTERNAL_SERVICE_ERROR", errorResponse.getErrorCode(), "Error code should be EXTERNAL_SERVICE_ERROR");
+                    assertEquals("Error from external service: 503 Service Unavailable", errorResponse.getMessage(), "Error message should include the external service error details");
+                    assertEquals(HttpStatus.SERVICE_UNAVAILABLE.value(), errorResponse.getStatus(), "HTTP status code should match the one from the exception");
+                    assertEquals("/external-api", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(HttpStatus.SERVICE_UNAVAILABLE, responseEntity.getStatusCode(), "Response entity status code should match the one from the exception");
                 })
                 .verifyComplete();
     }
 
+    /**
+     * Tests that handleResponseStatusException correctly processes a ResponseStatusException
+     * and returns an appropriate error response with the reason from the exception.
+     * This test uses StepVerifier for reactive stream assertions.
+     */
     @Test
     void testHandleResponseStatusException() {
         String reason = "Not Found";
@@ -124,15 +154,20 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals("HTTP_ERROR", errorResponse.getErrorCode());
-                    assertEquals(reason, errorResponse.getMessage());
-                    assertEquals(HttpStatus.NOT_FOUND.value(), errorResponse.getStatus());
-                    assertEquals("/test-endpoint", errorResponse.getPath());
-                    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+                    assertEquals("HTTP_ERROR", errorResponse.getErrorCode(), "Error code should be HTTP_ERROR");
+                    assertEquals(reason, errorResponse.getMessage(), "Error message should match the reason from the exception");
+                    assertEquals(HttpStatus.NOT_FOUND.value(), errorResponse.getStatus(), "HTTP status code should match the one from the exception");
+                    assertEquals("/test-endpoint", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), "Response entity status code should match the one from the exception");
                 })
                 .verifyComplete();
     }
 
+    /**
+     * Tests that handleGlobalException correctly processes a generic Exception
+     * and returns an appropriate error response with internal server error details.
+     * This test uses StepVerifier for reactive stream assertions.
+     */
     @Test
     void testHandleGlobalException() {
         String exceptionMessage = "Unexpected error occurred";
@@ -147,16 +182,21 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals("INTERNAL_SERVER_ERROR", errorResponse.getErrorCode());
-                    assertEquals("An unexpected error occurred", errorResponse.getMessage());
-                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus());
-                    assertEquals("/global-endpoint", errorResponse.getPath());
-                    assertEquals(exceptionMessage, errorResponse.getDetails());
-                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+                    assertEquals("INTERNAL_SERVER_ERROR", errorResponse.getErrorCode(), "Error code should be INTERNAL_SERVER_ERROR");
+                    assertEquals("An unexpected error occurred", errorResponse.getMessage(), "Error message should indicate an unexpected error");
+                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus(), "HTTP status code should be 500 (Internal Server Error)");
+                    assertEquals("/global-endpoint", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(exceptionMessage, errorResponse.getDetails(), "Error details should contain the exception message");
+                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode(), "Response entity status code should be INTERNAL_SERVER_ERROR");
                 })
                 .verifyComplete();
     }
 
+    /**
+     * Tests that handleThrowableException correctly processes a Throwable
+     * and returns an appropriate error response for unhandled errors.
+     * This test uses StepVerifier for reactive stream assertions.
+     */
     @Test
     void testHandleThrowableException() {
         Throwable throwable = new Throwable("Critical system failure");
@@ -170,18 +210,23 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals("UNHANDLED_ERROR", errorResponse.getErrorCode());
-                    assertEquals("An unexpected error occurred", errorResponse.getMessage());
-                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus());
-                    assertEquals("/critical-error", errorResponse.getPath());
-                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+                    assertEquals("UNHANDLED_ERROR", errorResponse.getErrorCode(), "Error code should be UNHANDLED_ERROR");
+                    assertEquals("An unexpected error occurred", errorResponse.getMessage(), "Error message should indicate an unexpected error");
+                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus(), "HTTP status code should be 500 (Internal Server Error)");
+                    assertEquals("/critical-error", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode(), "Response entity status code should be INTERNAL_SERVER_ERROR");
                 })
                 .verifyComplete();
     }
 
+    /**
+     * Tests that handleSystemException correctly processes a SystemException
+     * and returns an appropriate error response with the system error details.
+     * This test uses StepVerifier for reactive stream assertions.
+     */
     @Test
     void testHandleSystemException() {
-        String errorCode = SystemException.CONFIGURATION_ERROR;
+        String errorCode = ExceptionConstants.CONFIGURATION_ERROR.getErrorCode();
         String errorMessage = "System configuration error occurred";
         SystemException systemException = new SystemException(errorCode, errorMessage);
 
@@ -194,15 +239,20 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals(errorCode, errorResponse.getErrorCode());
-                    assertEquals(errorMessage, errorResponse.getMessage());
-                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus());
-                    assertEquals("/system-error", errorResponse.getPath());
-                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+                    assertEquals(errorCode, errorResponse.getErrorCode(), "Error code should match the one from the exception");
+                    assertEquals(errorMessage, errorResponse.getMessage(), "Error message should match the one from the exception");
+                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus(), "HTTP status code should be 500 (Internal Server Error)");
+                    assertEquals("/system-error", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode(), "Response entity status code should be INTERNAL_SERVER_ERROR");
                 })
                 .verifyComplete();
     }
 
+    /**
+     * Tests that handleConstraintViolationException correctly processes a ConstraintViolationException
+     * and returns an appropriate error response with validation error details.
+     * This test uses StepVerifier for reactive stream assertions.
+     */
     @Test
     void testHandleConstraintViolationException() {
         // Mock ConstraintViolation
@@ -227,16 +277,21 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals("VALIDATION_ERROR", errorResponse.getErrorCode());
-                    assertEquals("Validation failed", errorResponse.getMessage());
-                    assertEquals("username: must not be blank", errorResponse.getDetails());
-                    assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.getStatus());
-                    assertEquals("/validation-test", errorResponse.getPath());
-                    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+                    assertEquals("VALIDATION_ERROR", errorResponse.getErrorCode(), "Error code should be VALIDATION_ERROR");
+                    assertEquals("Validation failed", errorResponse.getMessage(), "Error message should indicate validation failure");
+                    assertEquals("username: must not be blank", errorResponse.getDetails(), "Error details should contain the validation constraint violation");
+                    assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.getStatus(), "HTTP status code should be 400 (Bad Request)");
+                    assertEquals("/validation-test", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), "Response entity status code should be BAD_REQUEST");
                 })
                 .verifyComplete();
     }
 
+    /**
+     * Tests that handleWebExchangeBindException correctly processes a WebExchangeBindException
+     * and returns an appropriate error response with field validation error details.
+     * This test uses StepVerifier for reactive stream assertions.
+     */
     @Test
     void testHandleWebExchangeBindException() {
         // Mock FieldError
@@ -260,12 +315,12 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals("VALIDATION_ERROR", errorResponse.getErrorCode());
-                    assertEquals("Validation failed", errorResponse.getMessage());
-                    assertEquals("email: must be a valid email address", errorResponse.getDetails());
-                    assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.getStatus());
-                    assertEquals("/bind-test", errorResponse.getPath());
-                    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+                    assertEquals("VALIDATION_ERROR", errorResponse.getErrorCode(), "Error code should be VALIDATION_ERROR");
+                    assertEquals("Validation failed", errorResponse.getMessage(), "Error message should indicate validation failure");
+                    assertEquals("email: must be a valid email address", errorResponse.getDetails(), "Error details should contain the field validation error");
+                    assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.getStatus(), "HTTP status code should be 400 (Bad Request)");
+                    assertEquals("/bind-test", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), "Response entity status code should be BAD_REQUEST");
                 })
                 .verifyComplete();
     }
