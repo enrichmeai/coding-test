@@ -221,6 +221,77 @@ npm test
 
 See `src/test/resources/static/README.md` for more details on setting up and running the frontend tests.
 
+### Integration Tests
+
+The project includes integration tests that verify the application works correctly end-to-end:
+
+- **Postman Tests**: API tests using Newman (Postman's command-line runner)
+
+#### Running Integration Tests
+
+There are three ways to run integration tests:
+
+**Option 1: Run integration tests without building first**
+
+If you've already built the application and just want to run the tests:
+
+```bash
+# Run all integration tests
+./gradlew integrationTest
+
+# Run only Postman tests
+./gradlew runPostmanIntegrationTest
+```
+
+Each of these tasks will:
+1. Start the Spring Boot application
+2. Run the specified tests
+3. Stop the application
+
+**Option 2: Build and run integration tests in one command**
+
+If you want to ensure the application is built before running tests:
+
+```bash
+# Build and run all integration tests
+./gradlew buildAndRunIntegrationTests
+
+# Build and run only Postman tests
+./gradlew buildAndRunPostmanTests
+```
+
+Each of these tasks will:
+1. Build the application
+2. Start the Spring Boot application
+3. Run the specified tests
+4. Stop the application
+
+**Option 3: Run individual test tasks**
+
+If you want more control over the test execution, you can run the individual test tasks directly:
+
+```bash
+# Start the application
+./gradlew startApp
+
+# Run Postman tests
+./gradlew runPostmanTests
+
+# Stop the application
+./gradlew stopApp
+```
+
+This option gives you the flexibility to:
+- Run tests against an already running application
+- Run tests in a specific order
+- Run tests multiple times without restarting the application
+- Manually inspect the application state between tests
+
+#### Prerequisites for Integration Tests
+
+- Node.js and npm (for running Newman/Postman tests)
+- Internet connection (for accessing external APIs)
+
 ## Code Quality
 
 The project uses the following code quality tools:

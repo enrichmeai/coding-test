@@ -83,6 +83,34 @@ To run PMD on the test source code:
 ./gradlew pmdTest
 ```
 
+## Cyclomatic Complexity Validation (CVC)
+
+Cyclomatic Complexity Validation (CVC) checks have been added to the project to ensure that code complexity is kept within reasonable limits. These checks help maintain code quality by identifying overly complex methods and classes that may be difficult to understand, test, and maintain.
+
+### Configuration
+
+The following complexity metrics are checked:
+
+1. **Cyclomatic Complexity**: Measures the number of linearly independent paths through a method or class.
+   - Class report level: 80
+   - Method report level: 10
+
+2. **NPath Complexity**: Measures the number of possible execution paths through a method.
+   - Report level: 200
+
+3. **Cognitive Complexity**: Measures how difficult it is for a human to understand the control flow of a method.
+   - Report level: 15
+
+These checks are configured in the PMD ruleset file (`config/pmd/ruleset.xml`).
+
+### Running CVC Checks
+
+CVC checks are run as part of the PMD analysis. To run these checks:
+
+```bash
+./gradlew pmdMain
+```
+
 ## Notes
 
 - Both Checkstyle and PMD are configured to generate HTML reports that can be viewed in a web browser.

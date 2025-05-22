@@ -10,9 +10,9 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": "http://localhost:8080/api/weather",
+          "raw": "http://{{host}}:8080/api/weather",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": ["{{host}}"],
           "port": "8080",
           "path": ["api", "weather"]
         },
@@ -25,9 +25,9 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": "http://localhost:8080/api/weather/cities/count?letter=Z",
+          "raw": "http://{{host}}:8080/api/weather/cities/count?letter=Z",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": ["{{host}}"],
           "port": "8080",
           "path": ["api", "weather", "cities", "count"],
           "query": [
@@ -46,9 +46,9 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": "http://localhost:8080/api/weather/cities?letter=T",
+          "raw": "http://{{host}}:8080/api/weather/cities?letter=T",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": ["{{host}}"],
           "port": "8080",
           "path": ["api", "weather", "cities"],
           "query": [
