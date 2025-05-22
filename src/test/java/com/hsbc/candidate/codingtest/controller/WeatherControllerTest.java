@@ -16,16 +16,43 @@ import java.util.Arrays;
 
 import static org.mockito.Mockito.when;
 
-public class WeatherControllerTest {
+/**
+ * Unit tests for the WeatherController class.
+ * These tests verify that the controller correctly handles HTTP requests,
+ * interacts with the WeatherService, and returns appropriate responses.
+ * The tests use WebTestClient for testing the HTTP endpoints and StepVerifier
+ * for testing the reactive streams.
+ */
+@SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+class WeatherControllerTest {
 
+    // Constants to avoid duplicate string literals
+    private static final String NEW_YORK = "New York";
+    private static final String NASHVILLE = "Nashville";
+    private static final String LETTER_N = "N";
+    private static final String LETTER_ABC = "ABC";
+    private static final String LETTER_1 = "1";
+
+    /**
+     * WebTestClient instance used to test HTTP endpoints.
+     * This client allows testing the controller without starting a full HTTP server.
+     */
     private WebTestClient webTestClient;
 
+    /**
+     * Mock of the WeatherService used by the controller.
+     * This is mocked to control the service's behavior in tests.
+     */
     @Mock
     private WeatherService weatherService;
 
-
+    /**
+     * Sets up the test environment before each test.
+     * Initialize mocks, creates the controller, and configures the WebTestClient.
+     * Also sets up common mock behaviors for the WeatherService.
+     */
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
 
         WeatherController controller = new WeatherController(weatherService);
@@ -44,8 +71,17 @@ public class WeatherControllerTest {
         when(weatherService.getCitiesStartingWith("1")).thenReturn(Mono.empty());
     }
 
+    /**
+     * Tests that the getAllWeatherData endpoint correctly returns weather data.
+     * This test verifies that:
+     * 1. The service method is called and returns the expected data
+     * 2. The controller returns the correct HTTP status and response body
+     * The test uses both StepVerifier for testing the reactive service and
+     * WebTestClient for testing the HTTP endpoint.
+     */
     @Test
-    public void testGetAllWeatherData() {
+    void testGetAllWeatherData() {
+        // Create test data
         WeatherResponse response = new WeatherResponse();
         response.setCod("200");
         response.setCalctime(0.1234);
@@ -62,12 +98,15 @@ public class WeatherControllerTest {
 
         response.setCities(Arrays.asList(city1, city2));
 
+        // Mock service behavior
         when(weatherService.fetchWeatherData()).thenReturn(Mono.just(response));
 
+        // Verify service behavior using StepVerifier
         StepVerifier.create(weatherService.fetchWeatherData())
                 .expectNext(response)
                 .verifyComplete();
 
+        // Test HTTP endpoint using WebTestClient
         webTestClient.get()
                 .uri("/api/weather")
                 .exchange()
@@ -77,14 +116,25 @@ public class WeatherControllerTest {
     }
 
 
+    /**
+     * Tests that the countCitiesStartingWith endpoint correctly returns the count of cities.
+     * This test verifies that:
+     * 1. The service method is called and returns the expected count
+     * 2. The controller returns the correct HTTP status and response body
+     * The test uses both StepVerifier for testing the reactive service and
+     * WebTestClient for testing the HTTP endpoint.
+     */
     @Test
-    public void testCountCitiesStartingWith() {
+    void testCountCitiesStartingWith() {
+        // Mock service behavior
         when(weatherService.countCitiesStartingWith("N")).thenReturn(Mono.just(1L));
 
+        // Verify service behavior using StepVerifier
         StepVerifier.create(weatherService.countCitiesStartingWith("N"))
                 .expectNext(1L)
                 .verifyComplete();
 
+        // Test HTTP endpoint using WebTestClient
         webTestClient.get()
                 .uri("/api/weather/cities/count?letter=N")
                 .exchange()
@@ -93,10 +143,17 @@ public class WeatherControllerTest {
                 .jsonPath("$.count").isEqualTo(1);
     }
 
+    /**
+     * Tests that the getCitiesStartingWith endpoint correctly returns a list of cities.
+     * This test verifies that the controller returns the correct HTTP status and response body
+     * containing the list of cities starting with the specified letter.
+     */
     @Test
-    public void testGetCitiesStartingWith() {
+    void testGetCitiesStartingWith() {
+        // Mock service behavior
         when(weatherService.getCitiesStartingWith("N")).thenReturn(Mono.just(Arrays.asList("New York", "Nashville")));
 
+        // Test HTTP endpoint using WebTestClient
         webTestClient.get()
                 .uri("/api/weather/cities?letter=N")
                 .exchange()
@@ -106,32 +163,56 @@ public class WeatherControllerTest {
                 .jsonPath("$[1]").isEqualTo("Nashville");
     }
 
+    /**
+     * Tests that the countCitiesStartingWith endpoint handles invalid input gracefully.
+     * This test verifies that when a letter parameter that is too long is provided,
+     * the controller still returns a successful response.
+     */
     @Test
-    public void testCountCitiesStartingWithInvalidLetterTooLong() {
+    void testCountCitiesStartingWithInvalidLetterTooLong() {
+        // Test HTTP endpoint using WebTestClient
         webTestClient.get()
                 .uri("/api/weather/cities/count?letter=ABC")
                 .exchange()
                 .expectStatus().isOk();
     }
 
+    /**
+     * Tests that the countCitiesStartingWith endpoint handles invalid input gracefully.
+     * This test verifies that when a numeric parameter is provided instead of a letter,
+     * the controller still returns a successful response.
+     */
     @Test
-    public void testCountCitiesStartingWithInvalidLetterNumber() {
+    void testCountCitiesStartingWithInvalidLetterNumber() {
+        // Test HTTP endpoint using WebTestClient
         webTestClient.get()
                 .uri("/api/weather/cities/count?letter=1")
                 .exchange()
                 .expectStatus().isOk();
     }
 
+    /**
+     * Tests that the getCitiesStartingWith endpoint handles invalid input gracefully.
+     * This test verifies that when a letter parameter that is too long is provided,
+     * the controller still returns a successful response.
+     */
     @Test
-    public void testGetCitiesStartingWithInvalidLetterTooLong() {
+    void testGetCitiesStartingWithInvalidLetterTooLong() {
+        // Test HTTP endpoint using WebTestClient
         webTestClient.get()
                 .uri("/api/weather/cities?letter=ABC")
                 .exchange()
                 .expectStatus().isOk();
     }
 
+    /**
+     * Tests that the getCitiesStartingWith endpoint handles invalid input gracefully.
+     * This test verifies that when a numeric parameter is provided instead of a letter,
+     * the controller still returns a successful response.
+     */
     @Test
-    public void testGetCitiesStartingWithInvalidLetterNumber() {
+    void testGetCitiesStartingWithInvalidLetterNumber() {
+        // Test HTTP endpoint using WebTestClient
         webTestClient.get()
                 .uri("/api/weather/cities?letter=1")
                 .exchange()

@@ -44,20 +44,6 @@ public class ApplicationException extends RuntimeException {
     }
 
     /**
-     * Constructs a new application exception with the specified error code, message, HTTP status, and cause.
-     *
-     * @param errorCode the error code
-     * @param message the detail message
-     * @param httpStatus the HTTP status code
-     * @param cause the cause of the exception
-     */
-    public ApplicationException(String errorCode, String message, HttpStatus httpStatus, Throwable cause) {
-        super(message, cause);
-        this.errorCode = errorCode;
-        this.httpStatus = httpStatus;
-    }
-
-    /**
      * Constructs a new application exception with the specified error code, message template, parameters, and HTTP status.
      *
      * @param errorCode the error code

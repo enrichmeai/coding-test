@@ -12,8 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * This class contains unit tests for the bean creation of the methodValidationPostProcessor method.
  */
 @SpringBootTest
-public class ValidationConfigTest {
+class ValidationConfigTest {
 
+    /**
+     * The ValidationConfig instance being tested.
+     * This is autowired by Spring to inject the actual bean from the application context.
+     */
     @Autowired
     private ValidationConfig validationConfig;
 
