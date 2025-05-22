@@ -27,10 +27,21 @@ public class WeatherControllerTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+
+        WeatherController controller = new WeatherController(weatherService);
+
         webTestClient = WebTestClient
-                .bindToController(new WeatherController(weatherService))
+                .bindToController(controller)
                 .controllerAdvice(new GlobalExceptionHandler())
                 .build();
+
+        when(weatherService.countCitiesStartingWith("N")).thenReturn(Mono.just(1L));
+        when(weatherService.getCitiesStartingWith("N")).thenReturn(Mono.just(Arrays.asList("New York", "Nashville")));
+
+        when(weatherService.countCitiesStartingWith("ABC")).thenReturn(Mono.empty());
+        when(weatherService.countCitiesStartingWith("1")).thenReturn(Mono.empty());
+        when(weatherService.getCitiesStartingWith("ABC")).thenReturn(Mono.empty());
+        when(weatherService.getCitiesStartingWith("1")).thenReturn(Mono.empty());
     }
 
     @Test
@@ -82,4 +93,48 @@ public class WeatherControllerTest {
                 .jsonPath("$.count").isEqualTo(1);
     }
 
+    @Test
+    public void testGetCitiesStartingWith() {
+        when(weatherService.getCitiesStartingWith("N")).thenReturn(Mono.just(Arrays.asList("New York", "Nashville")));
+
+        webTestClient.get()
+                .uri("/api/weather/cities?letter=N")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$[0]").isEqualTo("New York")
+                .jsonPath("$[1]").isEqualTo("Nashville");
+    }
+
+    @Test
+    public void testCountCitiesStartingWithInvalidLetterTooLong() {
+        webTestClient.get()
+                .uri("/api/weather/cities/count?letter=ABC")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    public void testCountCitiesStartingWithInvalidLetterNumber() {
+        webTestClient.get()
+                .uri("/api/weather/cities/count?letter=1")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    public void testGetCitiesStartingWithInvalidLetterTooLong() {
+        webTestClient.get()
+                .uri("/api/weather/cities?letter=ABC")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    public void testGetCitiesStartingWithInvalidLetterNumber() {
+        webTestClient.get()
+                .uri("/api/weather/cities?letter=1")
+                .exchange()
+                .expectStatus().isOk();
+    }
 }

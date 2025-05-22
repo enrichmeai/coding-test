@@ -9,6 +9,8 @@ import lombok.Getter;
 @Getter
 public class SystemException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     private final String errorCode;
 
     /**

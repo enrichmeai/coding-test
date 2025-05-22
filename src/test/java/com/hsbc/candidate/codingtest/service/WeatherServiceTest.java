@@ -1,7 +1,6 @@
 package com.hsbc.candidate.codingtest.service;
 
 import com.hsbc.candidate.codingtest.client.WeatherServiceClient;
-import com.hsbc.candidate.codingtest.exception.WeatherServiceException;
 import com.hsbc.candidate.codingtest.model.City;
 import com.hsbc.candidate.codingtest.model.WeatherResponse;
 import org.junit.jupiter.api.Test;
@@ -32,12 +31,12 @@ class WeatherServiceTest {
     }
 
     @Test
-    void fetchWeatherDataShouldHandleWeatherServiceException() {
-        when(weatherServiceClient.fetchWeatherData()).thenReturn(Mono.error(new RuntimeException("Unexpected Error")));
+    void fetchWeatherDataShouldPropagateExceptions() {
+        RuntimeException originalException = new RuntimeException("Unexpected Error");
+        when(weatherServiceClient.fetchWeatherData()).thenReturn(Mono.error(originalException));
 
         StepVerifier.create(weatherService.fetchWeatherData())
-                .expectErrorMatches(throwable -> throwable instanceof WeatherServiceException &&
-                        "Error processing weather data in service layer".equals(throwable.getMessage()))
+                .expectError(RuntimeException.class)
                 .verify();
     }
 

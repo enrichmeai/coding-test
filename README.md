@@ -36,7 +36,7 @@ After building, you can run the application using:
 Or you can run the JAR file directly:
 
 ```bash
-java -jar build/libs/CityLetterFinder-0.0.1-SNAPSHOT.jar
+java -jar build/libs/city-letter-finder-0.0.1-SNAPSHOT.jar
 ```
 
 The application will start and be available at http://localhost:8080
@@ -68,14 +68,18 @@ The application provides the following REST API endpoints:
 - Frontend: HTML, CSS, JavaScript
 - Build Tool: Gradle
 - Testing: JUnit (backend), Jest (frontend)
+- Code Quality: Checkstyle, PMD
 - Additional Dependencies:
   - Netty DNS resolver for MacOS (for proper DNS resolution on MacOS systems)
     - Supports both Intel (x86_64) and Apple Silicon (M1/M2/M3) architectures
 
 ## Project Structure
 
-- `src/main/java/com/example/demo` - Java source code
+- `src/main/java/com/hsbc/candidate/codingtest` - Java source code
+  - `client` - API client for external services
+  - `config` - Configuration classes
   - `controller` - REST API controllers
+  - `exception` - Exception handling classes
   - `model` - Data models
   - `service` - Business logic
 - `src/main/resources/static` - Frontend files (HTML, CSS, JavaScript)
@@ -111,6 +115,30 @@ npm test
 ```
 
 See `src/test/resources/static/README.md` for more details on setting up and running the frontend tests.
+
+## Code Quality
+
+The project uses the following code quality tools:
+
+### Checkstyle
+
+Checkstyle is used to enforce coding standards. You can run Checkstyle with:
+
+```bash
+./gradlew checkstyleMain  # For main source code
+./gradlew checkstyleTest  # For test source code
+```
+
+### PMD
+
+PMD is used to detect potential code issues. You can run PMD with:
+
+```bash
+./gradlew pmdMain  # For main source code
+./gradlew pmdTest  # For test source code
+```
+
+For more details on the code quality tools configuration, see `README-code-quality.md`.
 
 ## Data Source
 

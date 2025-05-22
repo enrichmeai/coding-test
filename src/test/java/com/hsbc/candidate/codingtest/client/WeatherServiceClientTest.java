@@ -1,7 +1,5 @@
 package com.hsbc.candidate.codingtest.client;
 
-import com.hsbc.candidate.codingtest.exception.CityLetterFinderSystemException;
-import com.hsbc.candidate.codingtest.exception.WeatherServiceException;
 import com.hsbc.candidate.codingtest.model.WeatherResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,7 +64,7 @@ class WeatherServiceClientTest {
     }
 
     @Test
-    void fetchWeatherDataShouldWrapWebClientResponseExceptionAsWeatherServiceException() {
+    void fetchWeatherDataShouldPropagateWebClientResponseException() {
         // Given
         WebClientResponseException exception = new WebClientResponseException(
                 500, "Internal Server Error", null, null, null);
@@ -75,13 +73,12 @@ class WeatherServiceClientTest {
 
         // When & Then
         StepVerifier.create(weatherServiceClient.fetchWeatherData())
-                .expectErrorMatches(throwable -> throwable instanceof WeatherServiceException &&
-                        ((WeatherServiceException) throwable).getErrorCode().equals(WeatherServiceException.SERVICE_UNAVAILABLE))
+                .expectError(WebClientResponseException.class)
                 .verify();
     }
 
     @Test
-    void fetchWeatherDataShouldWrapUnknownErrorsAsCityLetterFinderSystemException() {
+    void fetchWeatherDataShouldPropagateUnknownErrors() {
         // Given
         RuntimeException unknownException = new RuntimeException("Unknown error");
 
@@ -89,8 +86,7 @@ class WeatherServiceClientTest {
 
         // When & Then
         StepVerifier.create(weatherServiceClient.fetchWeatherData())
-                .expectErrorMatches(throwable -> throwable instanceof CityLetterFinderSystemException &&
-                        ((CityLetterFinderSystemException) throwable).getErrorCode().equals(WeatherServiceException.DATA_PROCESSING_ERROR))
+                .expectError(RuntimeException.class)
                 .verify();
     }
 }

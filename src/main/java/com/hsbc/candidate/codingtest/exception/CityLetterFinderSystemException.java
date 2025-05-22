@@ -6,6 +6,8 @@ package com.hsbc.candidate.codingtest.exception;
  */
 public class CityLetterFinderSystemException extends SystemException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Error code for when there is a city letter finder error
      */
