@@ -8,8 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * This class is responsible for bootstrapping and launching the Spring Boot application.
  */
 @SpringBootApplication
-@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
-// Cannot be final because Spring needs to create proxies
+@SuppressWarnings("checkstyle:FinalClass")
 public class WeatherApplication {
 
     /**
