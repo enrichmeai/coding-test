@@ -16,8 +16,29 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 
+/**
+ * Unit tests for the WeatherService class.
+ * These tests verify that the service correctly interacts with the WeatherServiceClient
+ * to fetch weather data and perform operations on city data, such as filtering cities
+ * by their starting letter.
+ */
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert") // Tests use StepVerifier for reactive stream assertions
 class WeatherServiceTest {
+
+    /**
+     * Mock of the WeatherServiceClient used by the service.
+     * This is mocked to control the client's behavior in tests.
+     */
+    @Mock
+    private WeatherServiceClient weatherServiceClient;
+
+    /**
+     * The WeatherService instance being tested.
+     * This is injected with the mock WeatherServiceClient.
+     */
+    @InjectMocks
+    private WeatherService weatherService;
 
     @Test
     void fetchWeatherDataShouldReturnWeatherResponseWhenSuccessful() {
@@ -49,12 +70,6 @@ class WeatherServiceTest {
                 .verify();
     }
 
-    @Mock
-    private WeatherServiceClient weatherServiceClient;
-
-    @InjectMocks
-    private WeatherService weatherService;
-
     @Test
     void countCitiesStartingWithShouldReturnCorrectCount() {
         WeatherResponse mockResponse = new WeatherResponse();
@@ -83,7 +98,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void getCitiesStartingWithShouldReturnCorrectCities() {
+    void testGetCitiesStartingWithReturnsCorrectCities() {
         WeatherResponse mockResponse = new WeatherResponse();
         List<City> cities = Arrays.asList(
                 createCity("Zuwarah"),
@@ -121,7 +136,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void getCitiesStartingWithShouldHandleNullOrEmptyInput() {
+    void testGetCitiesStartingWithHandlesNullOrEmptyInput() {
         StepVerifier.create(weatherService.getCitiesStartingWith(null))
                 .expectNext(List.of())
                 .verifyComplete();
@@ -131,6 +146,12 @@ class WeatherServiceTest {
                 .verifyComplete();
     }
 
+    /**
+     * Creates a City object with the specified name.
+     *
+     * @param name the name to set for the city
+     * @return a new City object with the specified name
+     */
     private City createCity(String name) {
         City city = new City();
         city.setName(name);

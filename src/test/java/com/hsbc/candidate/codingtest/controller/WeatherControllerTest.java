@@ -26,11 +26,29 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
 class WeatherControllerTest {
 
-    // Constants to avoid duplicate string literals
+    /**
+     * Constant for the city name "New York" used in multiple test methods.
+     */
     private static final String NEW_YORK = "New York";
+
+    /**
+     * Constant for the city name "Nashville" used in multiple test methods.
+     */
     private static final String NASHVILLE = "Nashville";
+
+    /**
+     * Constant for the letter "N" used as a filter parameter in multiple test methods.
+     */
     private static final String LETTER_N = "N";
+
+    /**
+     * Constant for the invalid filter "ABC" used in tests for invalid input handling.
+     */
     private static final String LETTER_ABC = "ABC";
+
+    /**
+     * Constant for the numeric filter "1" used in tests for invalid input handling.
+     */
     private static final String LETTER_1 = "1";
 
     /**

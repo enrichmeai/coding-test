@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
  * to fetch weather data and handles errors appropriately.
  */
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert") // Tests use StepVerifier for reactive stream assertions
 class WeatherServiceClientTest {
 
     /**

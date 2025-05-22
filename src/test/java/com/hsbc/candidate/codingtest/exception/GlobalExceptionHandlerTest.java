@@ -32,15 +32,49 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert") // Tests use StepVerifier for assertions
 class GlobalExceptionHandlerTest {
 
-    // Constants to avoid duplicate string literals in assertion messages
+    /**
+     * Assertion message for verifying that the error code in the response matches the expected value.
+     */
     private static final String MSG_ERROR_CODE = "Error code should match the one from the exception";
+
+    /**
+     * Assertion message for verifying that the error message in the response matches the expected value.
+     */
     private static final String MSG_ERROR_MESSAGE = "Error message should match the one from the exception";
+
+    /**
+     * Assertion message for verifying that the HTTP status code in the response matches the expected value.
+     */
     private static final String MSG_HTTP_STATUS = "HTTP status code should match the one from the exception";
+
+    /**
+     * Assertion message for verifying that the path in the response matches the request URI path.
+     */
     private static final String MSG_PATH = "Path should match the request URI path";
+
+    /**
+     * Assertion message for verifying that the response entity status code matches the expected value.
+     */
     private static final String MSG_STATUS_CODE = "Response entity status code should match the one from the exception";
+
+    /**
+     * Assertion message for verifying that the HTTP status code is 500 (Internal Server Error).
+     */
     private static final String MSG_INTERNAL_SERVER_ERROR = "HTTP status code should be 500 (Internal Server Error)";
+
+    /**
+     * Assertion message for verifying that the HTTP status code is 400 (Bad Request).
+     */
     private static final String MSG_BAD_REQUEST = "HTTP status code should be 400 (Bad Request)";
+
+    /**
+     * Assertion message for verifying that the error code is VALIDATION_ERROR.
+     */
     private static final String MSG_VALIDATION_ERROR = "Error code should be VALIDATION_ERROR";
+
+    /**
+     * Assertion message for verifying that the error message indicates a validation failure.
+     */
     private static final String MSG_VALIDATION_FAILED = "Error message should indicate validation failure";
 
     /**

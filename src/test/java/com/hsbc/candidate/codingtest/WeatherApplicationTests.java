@@ -16,6 +16,7 @@ class WeatherApplicationTests {
      * No explicit assertions are needed as the test passes if the context loads without exceptions.
      */
     @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert") // This test passes if no exceptions are thrown
     void contextLoads() {
         // No assertions needed - test passes if application context loads successfully
     }
