@@ -61,7 +61,13 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`/api/weather/cities/count?letter=${letter}`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    // Try to parse error response
+                    return response.json().then(errorData => {
+                        throw { message: `HTTP error! Status: ${response.status}`, errorData };
+                    }).catch(parseError => {
+                        // If parsing fails, throw original error
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    });
                 }
                 return response.json();
             })
@@ -72,7 +78,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 result.classList.remove('hidden');
             })
             .catch(err => {
-                showError(`Failed to fetch city count: ${err.message}`);
+                if (err.errorData) {
+                    // If we have error data from the server
+                    showError(`Error: ${err.errorData.message || 'Failed to fetch city count'}`, err.errorData);
+                } else {
+                    // If we don't have error data
+                    showError(`Failed to fetch city count: ${err.message}`);
+                }
             })
             .finally(() => {
                 loading.classList.add('hidden');
@@ -84,7 +96,13 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`/api/weather/cities?letter=${letter}`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    // Try to parse error response
+                    return response.json().then(errorData => {
+                        throw { message: `HTTP error! Status: ${response.status}`, errorData };
+                    }).catch(parseError => {
+                        // If parsing fails, throw original error
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    });
                 }
                 return response.json();
             })
@@ -103,13 +121,53 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(err => {
-                showError(`Failed to fetch city list: ${err.message}`);
+                if (err.errorData) {
+                    // If we have error data from the server
+                    showError(`Error: ${err.errorData.message || 'Failed to fetch city list'}`, err.errorData);
+                } else {
+                    // If we don't have error data
+                    showError(`Failed to fetch city list: ${err.message}`);
+                }
             });
     }
 
     // Function to show error
-    function showError(message) {
+    function showError(message, errorData) {
+        // Set error message
         errorMessage.textContent = message;
+
+        // If we have detailed error data from the server
+        if (errorData) {
+            // Set error code
+            document.getElementById('errorCode').textContent = errorData.errorCode || 'N/A';
+
+            // Set error status
+            document.getElementById('errorStatus').textContent = errorData.status || 'N/A';
+
+            // Set error path
+            document.getElementById('errorPath').textContent = errorData.path || 'N/A';
+
+            // Set error time
+            document.getElementById('errorTime').textContent =
+                errorData.timestamp ? new Date(errorData.timestamp).toLocaleString() : 'N/A';
+
+            // Set error details if available
+            if (errorData.details) {
+                document.getElementById('errorDetailsText').textContent = errorData.details;
+                document.getElementById('errorDetails').classList.remove('hidden');
+            } else {
+                document.getElementById('errorDetails').classList.add('hidden');
+            }
+        } else {
+            // If no detailed error data, set default values
+            document.getElementById('errorCode').textContent = 'N/A';
+            document.getElementById('errorStatus').textContent = 'N/A';
+            document.getElementById('errorPath').textContent = 'N/A';
+            document.getElementById('errorTime').textContent = 'N/A';
+            document.getElementById('errorDetails').classList.add('hidden');
+        }
+
+        // Show error container and hide loading
         error.classList.remove('hidden');
         loading.classList.add('hidden');
     }

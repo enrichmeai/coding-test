@@ -91,6 +91,25 @@ button:hover {
 #error {
     background-color: #ffdddd;
     border-left: 6px solid #f44336;
+    text-align: left;
+}
+
+#error h3 {
+    text-align: center;
+    margin-top: 0;
+    color: #d32f2f;
+}
+
+#error p {
+    text-align: left;
+    margin: 8px 0;
+}
+
+#errorDetails {
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
 }
 
 #cityList {
