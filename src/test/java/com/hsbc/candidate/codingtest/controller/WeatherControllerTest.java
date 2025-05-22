@@ -62,13 +62,13 @@ class WeatherControllerTest {
                 .controllerAdvice(new GlobalExceptionHandler())
                 .build();
 
-        when(weatherService.countCitiesStartingWith("N")).thenReturn(Mono.just(1L));
-        when(weatherService.getCitiesStartingWith("N")).thenReturn(Mono.just(Arrays.asList("New York", "Nashville")));
+        when(weatherService.countCitiesStartingWith(LETTER_N)).thenReturn(Mono.just(1L));
+        when(weatherService.getCitiesStartingWith(LETTER_N)).thenReturn(Mono.just(Arrays.asList(NEW_YORK, NASHVILLE)));
 
-        when(weatherService.countCitiesStartingWith("ABC")).thenReturn(Mono.empty());
-        when(weatherService.countCitiesStartingWith("1")).thenReturn(Mono.empty());
-        when(weatherService.getCitiesStartingWith("ABC")).thenReturn(Mono.empty());
-        when(weatherService.getCitiesStartingWith("1")).thenReturn(Mono.empty());
+        when(weatherService.countCitiesStartingWith(LETTER_ABC)).thenReturn(Mono.empty());
+        when(weatherService.countCitiesStartingWith(LETTER_1)).thenReturn(Mono.empty());
+        when(weatherService.getCitiesStartingWith(LETTER_ABC)).thenReturn(Mono.empty());
+        when(weatherService.getCitiesStartingWith(LETTER_1)).thenReturn(Mono.empty());
     }
 
     /**
@@ -90,7 +90,7 @@ class WeatherControllerTest {
 
         City city1 = new City();
         city1.setId(1L);
-        city1.setName("New York");
+        city1.setName(NEW_YORK);
 
         City city2 = new City();
         city2.setId(2L);
@@ -127,16 +127,16 @@ class WeatherControllerTest {
     @Test
     void testCountCitiesStartingWith() {
         // Mock service behavior
-        when(weatherService.countCitiesStartingWith("N")).thenReturn(Mono.just(1L));
+        when(weatherService.countCitiesStartingWith(LETTER_N)).thenReturn(Mono.just(1L));
 
         // Verify service behavior using StepVerifier
-        StepVerifier.create(weatherService.countCitiesStartingWith("N"))
+        StepVerifier.create(weatherService.countCitiesStartingWith(LETTER_N))
                 .expectNext(1L)
                 .verifyComplete();
 
         // Test HTTP endpoint using WebTestClient
         webTestClient.get()
-                .uri("/api/weather/cities/count?letter=N")
+                .uri("/api/weather/cities/count?letter=" + LETTER_N)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -151,16 +151,16 @@ class WeatherControllerTest {
     @Test
     void testGetCitiesStartingWith() {
         // Mock service behavior
-        when(weatherService.getCitiesStartingWith("N")).thenReturn(Mono.just(Arrays.asList("New York", "Nashville")));
+        when(weatherService.getCitiesStartingWith(LETTER_N)).thenReturn(Mono.just(Arrays.asList(NEW_YORK, NASHVILLE)));
 
         // Test HTTP endpoint using WebTestClient
         webTestClient.get()
-                .uri("/api/weather/cities?letter=N")
+                .uri("/api/weather/cities?letter=" + LETTER_N)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$[0]").isEqualTo("New York")
-                .jsonPath("$[1]").isEqualTo("Nashville");
+                .jsonPath("$[0]").isEqualTo(NEW_YORK)
+                .jsonPath("$[1]").isEqualTo(NASHVILLE);
     }
 
     /**
@@ -172,7 +172,7 @@ class WeatherControllerTest {
     void testCountCitiesStartingWithInvalidLetterTooLong() {
         // Test HTTP endpoint using WebTestClient
         webTestClient.get()
-                .uri("/api/weather/cities/count?letter=ABC")
+                .uri("/api/weather/cities/count?letter=" + LETTER_ABC)
                 .exchange()
                 .expectStatus().isOk();
     }
@@ -186,7 +186,7 @@ class WeatherControllerTest {
     void testCountCitiesStartingWithInvalidLetterNumber() {
         // Test HTTP endpoint using WebTestClient
         webTestClient.get()
-                .uri("/api/weather/cities/count?letter=1")
+                .uri("/api/weather/cities/count?letter=" + LETTER_1)
                 .exchange()
                 .expectStatus().isOk();
     }
@@ -200,7 +200,7 @@ class WeatherControllerTest {
     void testGetCitiesStartingWithInvalidLetterTooLong() {
         // Test HTTP endpoint using WebTestClient
         webTestClient.get()
-                .uri("/api/weather/cities?letter=ABC")
+                .uri("/api/weather/cities?letter=" + LETTER_ABC)
                 .exchange()
                 .expectStatus().isOk();
     }
@@ -214,7 +214,7 @@ class WeatherControllerTest {
     void testGetCitiesStartingWithInvalidLetterNumber() {
         // Test HTTP endpoint using WebTestClient
         webTestClient.get()
-                .uri("/api/weather/cities?letter=1")
+                .uri("/api/weather/cities?letter=" + LETTER_1)
                 .exchange()
                 .expectStatus().isOk();
     }

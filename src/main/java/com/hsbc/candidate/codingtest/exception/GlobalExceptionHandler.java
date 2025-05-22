@@ -26,20 +26,16 @@ import java.util.stream.Collectors;
 @SuppressWarnings("PMD.TooManyMethods") // This class needs multiple methods to handle different exception types
 public class GlobalExceptionHandler {
 
-    /**
-     * Default API path used when the request path cannot be determined.
-     */
-    private static final String DEFAULT_API_PATH = "/api";
 
     /**
      * Error code for internal server errors.
      */
-    private static final String INTERNAL_SERVER_ERROR_CODE = "INTERNAL_SERVER_ERROR";
+    private static final String INTERNAL_SERVER_ERROR_CODE = ExceptionConstants.INTERNAL_SERVER_ERROR.getErrorCode();
 
     /**
      * Error code for validation errors.
      */
-    private static final String VALIDATION_ERROR_CODE = "VALIDATION_ERROR";
+    private static final String VALIDATION_ERROR_CODE = ExceptionConstants.VALIDATION_ERROR.getErrorCode();
 
     /**
      * Error code for unhandled errors.
@@ -49,7 +45,7 @@ public class GlobalExceptionHandler {
     /**
      * Error code for external service errors.
      */
-    private static final String EXTERNAL_SERVICE_ERROR_CODE = "EXTERNAL_SERVICE_ERROR";
+    private static final String EXTERNAL_SERVICE_ERROR_CODE = ExceptionConstants.EXTERNAL_SERVICE_ERROR.getErrorCode();
 
     /**
      * Error code for HTTP errors.
@@ -218,8 +214,6 @@ public class GlobalExceptionHandler {
      * @return the request path or a default path if not available
      */
     private String extractRequestPath(ServerWebExchange exchange) {
-        return exchange != null && null != exchange.getRequest()
-                ? exchange.getRequest().getURI().getPath()
-                : DEFAULT_API_PATH;
+        return exchange.getRequest().getURI().getPath();
     }
 }

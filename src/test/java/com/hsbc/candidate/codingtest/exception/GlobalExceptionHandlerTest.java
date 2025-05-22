@@ -29,7 +29,19 @@ import static org.mockito.Mockito.when;
  * The tests use StepVerifier for reactive stream assertions.
  */
 @SpringBootTest
+@SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert") // Tests use StepVerifier for assertions
 class GlobalExceptionHandlerTest {
+
+    // Constants to avoid duplicate string literals in assertion messages
+    private static final String MSG_ERROR_CODE = "Error code should match the one from the exception";
+    private static final String MSG_ERROR_MESSAGE = "Error message should match the one from the exception";
+    private static final String MSG_HTTP_STATUS = "HTTP status code should match the one from the exception";
+    private static final String MSG_PATH = "Path should match the request URI path";
+    private static final String MSG_STATUS_CODE = "Response entity status code should match the one from the exception";
+    private static final String MSG_INTERNAL_SERVER_ERROR = "HTTP status code should be 500 (Internal Server Error)";
+    private static final String MSG_BAD_REQUEST = "HTTP status code should be 400 (Bad Request)";
+    private static final String MSG_VALIDATION_ERROR = "Error code should be VALIDATION_ERROR";
+    private static final String MSG_VALIDATION_FAILED = "Error message should indicate validation failure";
 
     /**
      * The GlobalExceptionHandler instance being tested.
@@ -59,11 +71,11 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals(errorCode, errorResponse.getErrorCode(), "Error code should match the one from the exception");
-                    assertEquals(errorMessage, errorResponse.getMessage(), "Error message should match the one from the exception");
-                    assertEquals(httpStatus.value(), errorResponse.getStatus(), "HTTP status code should match the one from the exception");
-                    assertEquals("/some-endpoint", errorResponse.getPath(), "Path should match the request URI path");
-                    assertEquals(httpStatus, responseEntity.getStatusCode(), "Response entity status code should match the one from the exception");
+                    assertEquals(errorCode, errorResponse.getErrorCode(), MSG_ERROR_CODE);
+                    assertEquals(errorMessage, errorResponse.getMessage(), MSG_ERROR_MESSAGE);
+                    assertEquals(httpStatus.value(), errorResponse.getStatus(), MSG_HTTP_STATUS);
+                    assertEquals("/some-endpoint", errorResponse.getPath(), MSG_PATH);
+                    assertEquals(httpStatus, responseEntity.getStatusCode(), MSG_STATUS_CODE);
                 })
                 .verifyComplete();
     }
@@ -92,11 +104,11 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals(errorCode, errorResponse.getErrorCode(), "Error code should match the one from the exception");
+                    assertEquals(errorCode, errorResponse.getErrorCode(), MSG_ERROR_CODE);
                     assertEquals(expectedMessage, errorResponse.getMessage(), "Error message should be formatted with the parameter value");
-                    assertEquals(httpStatus.value(), errorResponse.getStatus(), "HTTP status code should match the one from the exception");
-                    assertEquals("/validation-endpoint", errorResponse.getPath(), "Path should match the request URI path");
-                    assertEquals(httpStatus, responseEntity.getStatusCode(), "Response entity status code should match the one from the exception");
+                    assertEquals(httpStatus.value(), errorResponse.getStatus(), MSG_HTTP_STATUS);
+                    assertEquals("/validation-endpoint", errorResponse.getPath(), MSG_PATH);
+                    assertEquals(httpStatus, responseEntity.getStatusCode(), MSG_STATUS_CODE);
                 })
                 .verifyComplete();
     }
@@ -128,9 +140,9 @@ class GlobalExceptionHandlerTest {
                     assert errorResponse != null;
                     assertEquals("EXTERNAL_SERVICE_ERROR", errorResponse.getErrorCode(), "Error code should be EXTERNAL_SERVICE_ERROR");
                     assertEquals("Error from external service: 503 Service Unavailable", errorResponse.getMessage(), "Error message should include the external service error details");
-                    assertEquals(HttpStatus.SERVICE_UNAVAILABLE.value(), errorResponse.getStatus(), "HTTP status code should match the one from the exception");
-                    assertEquals("/external-api", errorResponse.getPath(), "Path should match the request URI path");
-                    assertEquals(HttpStatus.SERVICE_UNAVAILABLE, responseEntity.getStatusCode(), "Response entity status code should match the one from the exception");
+                    assertEquals(HttpStatus.SERVICE_UNAVAILABLE.value(), errorResponse.getStatus(), MSG_HTTP_STATUS);
+                    assertEquals("/external-api", errorResponse.getPath(), MSG_PATH);
+                    assertEquals(HttpStatus.SERVICE_UNAVAILABLE, responseEntity.getStatusCode(), MSG_STATUS_CODE);
                 })
                 .verifyComplete();
     }
@@ -155,10 +167,10 @@ class GlobalExceptionHandlerTest {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
                     assertEquals("HTTP_ERROR", errorResponse.getErrorCode(), "Error code should be HTTP_ERROR");
-                    assertEquals(reason, errorResponse.getMessage(), "Error message should match the reason from the exception");
-                    assertEquals(HttpStatus.NOT_FOUND.value(), errorResponse.getStatus(), "HTTP status code should match the one from the exception");
-                    assertEquals("/test-endpoint", errorResponse.getPath(), "Path should match the request URI path");
-                    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), "Response entity status code should match the one from the exception");
+                    assertEquals(reason, errorResponse.getMessage(), MSG_ERROR_MESSAGE);
+                    assertEquals(HttpStatus.NOT_FOUND.value(), errorResponse.getStatus(), MSG_HTTP_STATUS);
+                    assertEquals("/test-endpoint", errorResponse.getPath(), MSG_PATH);
+                    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), MSG_STATUS_CODE);
                 })
                 .verifyComplete();
     }
@@ -184,8 +196,8 @@ class GlobalExceptionHandlerTest {
                     assert errorResponse != null;
                     assertEquals("INTERNAL_SERVER_ERROR", errorResponse.getErrorCode(), "Error code should be INTERNAL_SERVER_ERROR");
                     assertEquals("An unexpected error occurred", errorResponse.getMessage(), "Error message should indicate an unexpected error");
-                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus(), "HTTP status code should be 500 (Internal Server Error)");
-                    assertEquals("/global-endpoint", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus(), MSG_INTERNAL_SERVER_ERROR);
+                    assertEquals("/global-endpoint", errorResponse.getPath(), MSG_PATH);
                     assertEquals(exceptionMessage, errorResponse.getDetails(), "Error details should contain the exception message");
                     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode(), "Response entity status code should be INTERNAL_SERVER_ERROR");
                 })
@@ -212,8 +224,8 @@ class GlobalExceptionHandlerTest {
                     assert errorResponse != null;
                     assertEquals("UNHANDLED_ERROR", errorResponse.getErrorCode(), "Error code should be UNHANDLED_ERROR");
                     assertEquals("An unexpected error occurred", errorResponse.getMessage(), "Error message should indicate an unexpected error");
-                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus(), "HTTP status code should be 500 (Internal Server Error)");
-                    assertEquals("/critical-error", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus(), MSG_INTERNAL_SERVER_ERROR);
+                    assertEquals("/critical-error", errorResponse.getPath(), MSG_PATH);
                     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode(), "Response entity status code should be INTERNAL_SERVER_ERROR");
                 })
                 .verifyComplete();
@@ -239,10 +251,10 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals(errorCode, errorResponse.getErrorCode(), "Error code should match the one from the exception");
-                    assertEquals(errorMessage, errorResponse.getMessage(), "Error message should match the one from the exception");
-                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus(), "HTTP status code should be 500 (Internal Server Error)");
-                    assertEquals("/system-error", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(errorCode, errorResponse.getErrorCode(), MSG_ERROR_CODE);
+                    assertEquals(errorMessage, errorResponse.getMessage(), MSG_ERROR_MESSAGE);
+                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus(), MSG_INTERNAL_SERVER_ERROR);
+                    assertEquals("/system-error", errorResponse.getPath(), MSG_PATH);
                     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode(), "Response entity status code should be INTERNAL_SERVER_ERROR");
                 })
                 .verifyComplete();
@@ -277,11 +289,11 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals("VALIDATION_ERROR", errorResponse.getErrorCode(), "Error code should be VALIDATION_ERROR");
-                    assertEquals("Validation failed", errorResponse.getMessage(), "Error message should indicate validation failure");
+                    assertEquals("VALIDATION_ERROR", errorResponse.getErrorCode(), MSG_VALIDATION_ERROR);
+                    assertEquals("Validation failed", errorResponse.getMessage(), MSG_VALIDATION_FAILED);
                     assertEquals("username: must not be blank", errorResponse.getDetails(), "Error details should contain the validation constraint violation");
-                    assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.getStatus(), "HTTP status code should be 400 (Bad Request)");
-                    assertEquals("/validation-test", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.getStatus(), MSG_BAD_REQUEST);
+                    assertEquals("/validation-test", errorResponse.getPath(), MSG_PATH);
                     assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), "Response entity status code should be BAD_REQUEST");
                 })
                 .verifyComplete();
@@ -315,11 +327,11 @@ class GlobalExceptionHandlerTest {
                 .assertNext(responseEntity -> {
                     ErrorResponse errorResponse = responseEntity.getBody();
                     assert errorResponse != null;
-                    assertEquals("VALIDATION_ERROR", errorResponse.getErrorCode(), "Error code should be VALIDATION_ERROR");
-                    assertEquals("Validation failed", errorResponse.getMessage(), "Error message should indicate validation failure");
+                    assertEquals("VALIDATION_ERROR", errorResponse.getErrorCode(), MSG_VALIDATION_ERROR);
+                    assertEquals("Validation failed", errorResponse.getMessage(), MSG_VALIDATION_FAILED);
                     assertEquals("email: must be a valid email address", errorResponse.getDetails(), "Error details should contain the field validation error");
-                    assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.getStatus(), "HTTP status code should be 400 (Bad Request)");
-                    assertEquals("/bind-test", errorResponse.getPath(), "Path should match the request URI path");
+                    assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.getStatus(), MSG_BAD_REQUEST);
+                    assertEquals("/bind-test", errorResponse.getPath(), MSG_PATH);
                     assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode(), "Response entity status code should be BAD_REQUEST");
                 })
                 .verifyComplete();
