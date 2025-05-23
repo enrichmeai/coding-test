@@ -93,7 +93,9 @@ To use the collection:
   - `service` - Business logic
 - `src/main/resources/static` - Static resources for the frontend
 - `src/main/webapp` - React TypeScript frontend source code
+  - `api` - API client for frontend services
   - `components` - React components
+    - `__tests__` - Component tests
   - `App.tsx` - Main React component
   - `index.tsx` - React entry point
 - `src/test/java` - Backend test code
@@ -110,6 +112,7 @@ The application follows a layered architecture pattern with clear separation of 
 
 1. **Presentation Layer (Controllers)**
    - `WeatherController`: Handles HTTP requests, validates input, and returns appropriate responses
+   - `IndexController`: Redirects requests from the root path to the index.html file
    - Uses reactive programming with Spring WebFlux for non-blocking request handling
    - Endpoints are mapped to specific service methods
 
@@ -175,17 +178,47 @@ The application uses reactive programming (Project Reactor) for:
 - Handling backpressure
 - Composing asynchronous operations
 
+### Frontend Architecture
+
+The frontend follows a clean architecture pattern with clear separation of concerns:
+
+1. **Component Layer**
+   - `App`: Main application component that serves as the entry point
+   - `CityLetterFinder`: Core component that handles user interactions and displays results
+   - Uses class-based components for better organization and encapsulation
+
+2. **API Client Layer**
+   - `WeatherApiClient`: Dedicated client for interacting with the backend API
+   - Handles all HTTP requests to the backend endpoints
+   - Provides type-safe methods for fetching data
+   - Encapsulates error handling and response processing
+   - Implements a clean interface for components to consume
+
+3. **Type Definitions**
+   - Strong typing with TypeScript interfaces for all data structures
+   - Ensures type safety across the application
+   - Provides better developer experience with autocompletion and error checking
+
+4. **Component Interaction Flow**
+   - User interacts with the CityLetterFinder component
+   - Component validates input and updates its state
+   - Component calls WeatherApiClient methods to fetch data
+   - WeatherApiClient makes HTTP requests to the backend API
+   - Component processes the response and updates its state
+   - Component renders the updated UI based on the new state
+
 ## UI Features
 
 The UI has been implemented with React and TypeScript, providing the following features:
 
-- Component-based architecture for better maintainability
+- Class-based component architecture for better organization and encapsulation
 - Strong typing with TypeScript for improved code quality and developer experience
+- Separation of concerns with a dedicated WeatherApiClient for API interactions
 - Real-time input validation with visual feedback
 - Clear button to reset the form
 - Enhanced error handling and display
 - Improved visual design with better spacing and colors
-- State management using React hooks
+- State management using React class component state
 
 ### Current Implementation
 
@@ -193,7 +226,7 @@ The UI is implemented using React with TypeScript, which provides several advant
 
 - **Type Safety**: TypeScript adds static type checking to catch errors during development
 - **Component-Based Architecture**: React's component-based approach makes the UI more modular and easier to maintain
-- **State Management**: Efficient state management with React hooks
+- **State Management**: Efficient state management with React class component state
 - **Developer Experience**: Improved developer experience with hot reloading and better debugging tools
 - **Performance**: Virtual DOM for efficient rendering and better performance
 - **Ecosystem**: Access to a rich ecosystem of libraries and tools

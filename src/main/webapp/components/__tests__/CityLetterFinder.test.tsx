@@ -2,9 +2,17 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import CityLetterFinder from '../CityLetterFinder';
+import { weatherApiClient } from '../../api/WeatherApiClient';
 
-// Mock the fetch function
-global.fetch = jest.fn();
+// Mock the WeatherApiClient
+jest.mock('../../api/WeatherApiClient', () => ({
+  weatherApiClient: {
+    getCityCount: jest.fn(),
+    getCityList: jest.fn()
+  },
+  // Re-export the types
+  ErrorResponse: jest.requireActual('../../api/WeatherApiClient').ErrorResponse
+}));
 
 describe('CityLetterFinder Component', () => {
   // Reset mocks before each test
@@ -52,19 +60,14 @@ describe('CityLetterFinder Component', () => {
   // Test 4: Form submission with valid input
   test('submits form with valid input and fetches data', async () => {
     // Mock successful responses
-    (global.fetch as jest.Mock).mockImplementation((url) => {
-      if (url.includes('/api/weather/cities/count')) {
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({ count: 3 })
-        });
-      } else if (url.includes('/api/weather/cities')) {
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(['Zuwarah', 'Zawiya', 'Zlitan'])
-        });
-      }
-      return Promise.reject(new Error('Not found'));
+    (weatherApiClient.getCityCount as jest.Mock).mockResolvedValue({
+      count: 3,
+      error: null
+    });
+
+    (weatherApiClient.getCityList as jest.Mock).mockResolvedValue({
+      cities: ['Zuwarah', 'Zawiya', 'Zlitan'],
+      error: null
     });
 
     render(<CityLetterFinder />);
@@ -78,6 +81,10 @@ describe('CityLetterFinder Component', () => {
 
     // Wait for the API calls to complete
     await waitFor(() => {
+      // Check that the API client methods were called with the correct letter
+      expect(weatherApiClient.getCityCount).toHaveBeenCalledWith('Z');
+      expect(weatherApiClient.getCityList).toHaveBeenCalledWith('Z');
+
       // Check that the results are displayed
       expect(screen.getByTestId('city-count-result')).toBeInTheDocument();
       expect(screen.getByTestId('city-list')).toBeInTheDocument();
@@ -95,15 +102,20 @@ describe('CityLetterFinder Component', () => {
   // Test 5: Error handling - API error
   test('handles API errors correctly', async () => {
     // Mock error response
-    (global.fetch as jest.Mock).mockImplementation(() => {
-      return Promise.resolve({
-        ok: false,
-        json: () => Promise.resolve({
-          message: 'Internal Server Error',
-          errorCode: 'ERR-500',
-          status: '500'
-        })
-      });
+    const errorResponse = {
+      message: 'Internal Server Error',
+      errorCode: 'ERR-500',
+      status: '500'
+    };
+
+    (weatherApiClient.getCityCount as jest.Mock).mockResolvedValue({
+      count: null,
+      error: errorResponse
+    });
+
+    (weatherApiClient.getCityList as jest.Mock).mockResolvedValue({
+      cities: null,
+      error: null  // Only need one error to test error handling
     });
 
     render(<CityLetterFinder />);
@@ -117,6 +129,9 @@ describe('CityLetterFinder Component', () => {
 
     // Wait for the API calls to complete
     await waitFor(() => {
+      // Check that the API client methods were called
+      expect(weatherApiClient.getCityCount).toHaveBeenCalledWith('Z');
+
       // Check that the error message is displayed
       expect(screen.getByTestId('error-container')).toBeInTheDocument();
       expect(screen.getByText('Internal Server Error')).toBeInTheDocument();
@@ -126,19 +141,14 @@ describe('CityLetterFinder Component', () => {
   // Test 6: Clear button functionality
   test('clear button resets the form', async () => {
     // Mock successful responses
-    (global.fetch as jest.Mock).mockImplementation((url) => {
-      if (url.includes('/api/weather/cities/count')) {
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({ count: 3 })
-        });
-      } else if (url.includes('/api/weather/cities')) {
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(['Zuwarah', 'Zawiya', 'Zlitan'])
-        });
-      }
-      return Promise.reject(new Error('Not found'));
+    (weatherApiClient.getCityCount as jest.Mock).mockResolvedValue({
+      count: 3,
+      error: null
+    });
+
+    (weatherApiClient.getCityList as jest.Mock).mockResolvedValue({
+      cities: ['Zuwarah', 'Zawiya', 'Zlitan'],
+      error: null
     });
 
     render(<CityLetterFinder />);
@@ -167,13 +177,24 @@ describe('CityLetterFinder Component', () => {
 
   // Test 7: Loading state
   test('shows loading state during API calls', async () => {
-    // Mock delayed response
-    (global.fetch as jest.Mock).mockImplementation(() => {
+    // Mock delayed responses
+    (weatherApiClient.getCityCount as jest.Mock).mockImplementation(() => {
       return new Promise(resolve => {
         setTimeout(() => {
           resolve({
-            ok: true,
-            json: () => Promise.resolve({ count: 3 })
+            count: 3,
+            error: null
+          });
+        }, 100);
+      });
+    });
+
+    (weatherApiClient.getCityList as jest.Mock).mockImplementation(() => {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve({
+            cities: ['Zuwarah', 'Zawiya', 'Zlitan'],
+            error: null
           });
         }, 100);
       });
