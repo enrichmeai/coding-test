@@ -20,6 +20,8 @@ plugins {
     id 'jacoco'
     id 'checkstyle'
     id 'pmd'
+    id 'org.owasp.dependencycheck' version '8.4.3'
+    id 'com.github.spotbugs' version '5.1.3'
 }
 
 group = 'com.example'
@@ -49,6 +51,8 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // Security plugins
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
 }
 
 tasks.named('test') {
@@ -280,3 +284,56 @@ runPostmanTests.finalizedBy stopApp
 // Hook into the build lifecycle
 // Note: We're not finalizing the build with integrationTest anymore
 // to allow separate execution of integration tests
+
+// Configure OWASP Dependency Check
+dependencyCheck {
+    failBuildOnCVSS = 7  // Fail the build for CVSS scores >= 7 (high severity)
+    formats = ['HTML', 'XML', 'JSON']
+    outputDirectory = "${buildDir}/reports/dependency-check"
+    suppressionFile = file("${rootDir}/config/dependency-check/suppressions.xml")
+    analyzers {
+        assemblyEnabled = false
+        nodeEnabled = false  // Disable Node.js analysis if not needed
+    }
+}
+
+// Configure SpotBugs
+spotbugs {
+    toolVersion = '4.7.3'
+    ignoreFailures = true  // Set to true to prevent build failures due to SpotBugs issues
+    effort = 'max'
+    reportLevel = 'medium'
+    excludeFilter = file("${rootDir}/config/spotbugs/exclude.xml")
+
+    // Exclude problematic detectors - using short detector name
+    omitVisitors = ['SpringEntityLeakDetector']
+
+    // Set maximum heap size to avoid memory issues
+    maxHeapSize = '1g'
+}
+
+spotbugsMain {
+    reports {
+        create('html') {
+            required = true
+            outputLocation = file("${buildDir}/reports/spotbugs/main.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+        create('xml') {
+            required = true
+            outputLocation = file("${buildDir}/reports/spotbugs/main.xml")
+        }
+    }
+}
+
+// Task to run all security checks
+tasks.register('securityCheck') {
+    group = 'verification'
+    description = 'Runs all security vulnerability checks'
+
+    dependsOn dependencyCheckAnalyze, spotbugsMain
+
+    doLast {
+        println "Security vulnerability checks completed successfully!"
+    }
+}

@@ -74,7 +74,7 @@ To use the collection:
 ## Technology Stack
 
 - Backend: Java 17, Spring Boot 3.4.5
-- Frontend: HTML, CSS, JavaScript
+- Frontend: React with TypeScript
 - Build Tool: Gradle
 - Testing: JUnit (backend), Jest (frontend)
 - Code Quality: Checkstyle, PMD
@@ -91,10 +91,16 @@ To use the collection:
   - `exception` - Exception handling classes
   - `model` - Data models
   - `service` - Business logic
-- `src/main/resources/static` - Frontend files (HTML, CSS, JavaScript)
+- `src/main/resources/static` - Static resources for the frontend
+- `src/main/webapp` - React TypeScript frontend source code
+  - `components` - React components
+  - `App.tsx` - Main React component
+  - `index.tsx` - React entry point
 - `src/test/java` - Backend test code
-- `src/test/resources/static` - Frontend test code
+- `src/test/resources` - Test resources and configuration
 - `STORY.md` - User story with detailed acceptance criteria
+- `tsconfig.json` - TypeScript configuration
+- `.env` - Environment variables for React
 
 ## Architecture
 
@@ -171,35 +177,63 @@ The application uses reactive programming (Project Reactor) for:
 
 ## UI Features
 
-The UI has been improved with the following features:
+The UI has been implemented with React and TypeScript, providing the following features:
 
+- Component-based architecture for better maintainability
+- Strong typing with TypeScript for improved code quality and developer experience
 - Real-time input validation with visual feedback
 - Clear button to reset the form
 - Enhanced error handling and display
 - Improved visual design with better spacing and colors
+- State management using React hooks
 
 ### Current Implementation
 
-The current UI is implemented using vanilla HTML, CSS, and JavaScript, which is embedded within the Spring Boot application. This approach provides a simple and lightweight frontend that is tightly coupled with the backend.
+The UI is implemented using React with TypeScript, which provides several advantages:
 
-### Future Considerations
-
-While the current implementation is sufficient for the application's needs, there are several benefits to moving to a modern frontend framework like React:
-
-- **Component-Based Architecture**: React's component-based approach would make the UI more modular and easier to maintain
-- **State Management**: Better state management with tools like Redux or Context API
+- **Type Safety**: TypeScript adds static type checking to catch errors during development
+- **Component-Based Architecture**: React's component-based approach makes the UI more modular and easier to maintain
+- **State Management**: Efficient state management with React hooks
 - **Developer Experience**: Improved developer experience with hot reloading and better debugging tools
 - **Performance**: Virtual DOM for efficient rendering and better performance
 - **Ecosystem**: Access to a rich ecosystem of libraries and tools
 
-#### Potential Migration Path
+The React application is built and embedded within the Spring Boot application, allowing for a single deployment while still benefiting from modern frontend development practices.
 
-1. Create a separate React application for the frontend
-2. Configure the React app to communicate with the existing Spring Boot backend API
-3. Deploy the React app separately from the backend
-4. Gradually migrate features from the current UI to the React app
+### Building the React Frontend
 
-This separation of concerns would allow for independent scaling and deployment of the frontend and backend components, following microservices best practices.
+To build the React frontend:
+
+```bash
+# Install dependencies
+npm install
+
+# Build the React application and copy to Spring Boot static resources
+npm run build:react
+```
+
+This will compile the TypeScript code, bundle the React application, and copy the built files to the Spring Boot static resources directory.
+
+### Development Workflow
+
+For frontend development, you can use the React development server:
+
+```bash
+npm start
+```
+
+This will start the React development server with hot reloading at http://localhost:3000. The development server is configured to proxy API requests to the Spring Boot backend at http://localhost:8080.
+
+### Future Considerations
+
+As the application grows, consider:
+
+- Adding state management libraries like Redux or Zustand for more complex state requirements
+- Implementing more advanced routing with React Router
+- Adding more comprehensive testing with React Testing Library
+- Exploring server-side rendering or static site generation for improved performance
+
+These enhancements would further improve the application's maintainability, performance, and user experience.
 
 ## Testing
 
@@ -213,13 +247,31 @@ Backend tests are written using JUnit and can be run with Gradle:
 
 ### Frontend Tests
 
-Frontend tests are written using Jest and can be run with npm:
+Frontend tests are written using Jest and React Testing Library and can be run with npm:
 
 ```bash
 npm test
 ```
 
-See `src/test/resources/static/README.md` for more details on setting up and running the frontend tests.
+The Jest configuration is set up in `jest.config.js` to run tests for the React components. The tests are located in the `__tests__` directory within the components directory.
+
+A custom setup file (`src/test/setup/setupTests.js`) is used to patch the React Testing Library to use `React.act` instead of the deprecated `ReactDOMTestUtils.act`, eliminating deprecation warnings during test execution.
+
+The frontend tests cover:
+
+- **Component Rendering**: Tests that components render correctly with their initial state
+- **User Interactions**: Tests for input validation, form submission, and button clicks
+- **API Integration**: Tests that API calls are made correctly and results are displayed
+- **Error Handling**: Tests that error states are handled and displayed correctly
+- **Loading States**: Tests that loading indicators are shown during API calls
+
+For example, the `CityLetterFinder` component has tests for:
+- Initial rendering
+- Input validation for valid and invalid letters
+- Form submission with API calls
+- Error handling for API errors
+- Clear button functionality
+- Loading state during API calls
 
 ### Integration Tests
 

@@ -1,6 +1,8 @@
 spring:
   application:
     name: city-letter-finder
+  mvc:
+    static-path-pattern: /static/**
 weather:
   api:
     # bbox parameter explanation:

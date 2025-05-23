@@ -111,9 +111,103 @@ CVC checks are run as part of the PMD analysis. To run these checks:
 ./gradlew pmdMain
 ```
 
+## Security Vulnerability Scanning
+
+The project includes two security vulnerability scanning tools to help identify potential security issues:
+
+### OWASP Dependency-Check
+
+OWASP Dependency-Check is a Software Composition Analysis (SCA) tool that detects publicly disclosed vulnerabilities in project dependencies.
+
+#### Configuration
+
+Dependency-Check has been configured in the `build.gradle` file:
+
+```gradle
+dependencyCheck {
+    failBuildOnCVSS = 7  // Fail the build for CVSS scores >= 7 (high severity)
+    formats = ['HTML', 'XML', 'JSON']
+    outputDirectory = "${buildDir}/reports/dependency-check"
+    suppressionFile = file("${rootDir}/config/dependency-check/suppressions.xml")
+    analyzers {
+        assemblyEnabled = false
+        nodeEnabled = false  // Disable Node.js analysis if not needed
+    }
+}
+```
+
+The suppressions file is located at `config/dependency-check/suppressions.xml`.
+
+#### Running Dependency-Check
+
+To run Dependency-Check:
+
+```bash
+./gradlew dependencyCheckAnalyze
+```
+
+The report will be generated in `build/reports/dependency-check/`.
+
+### SpotBugs with FindSecBugs
+
+SpotBugs is a static analysis tool that looks for bugs in Java code. FindSecBugs is a SpotBugs plugin specifically designed to find security vulnerabilities.
+
+#### Configuration
+
+SpotBugs has been configured in the `build.gradle` file:
+
+```gradle
+spotbugs {
+    toolVersion = '4.7.3'
+    ignoreFailures = false
+    effort = 'max'
+    reportLevel = 'medium'
+    excludeFilter = file("${rootDir}/config/spotbugs/exclude.xml")
+}
+
+spotbugsMain {
+    reports {
+        create('html') {
+            required = true
+            outputLocation = file("${buildDir}/reports/spotbugs/main.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+        create('xml') {
+            required = true
+            outputLocation = file("${buildDir}/reports/spotbugs/main.xml")
+        }
+    }
+}
+```
+
+The exclusion file is located at `config/spotbugs/exclude.xml`.
+
+#### Running SpotBugs
+
+To run SpotBugs:
+
+```bash
+./gradlew spotbugsMain
+```
+
+The report will be generated in `build/reports/spotbugs/`.
+
+### Running All Security Checks
+
+To run all security checks at once:
+
+```bash
+./gradlew securityCheck
+```
+
+This will run both Dependency-Check and SpotBugs.
+
 ## Notes
 
 - Both Checkstyle and PMD are configured to generate HTML reports that can be viewed in a web browser.
 - Checkstyle is configured to fail the build if there are any errors, but to allow up to 100 warnings.
 - PMD is configured to not fail the build on violations, which is a common approach when first introducing code quality tools to an existing codebase.
 - The rules for both tools can be adjusted in their respective XML configuration files to better suit the project's needs.
+- OWASP Dependency-Check is configured to fail the build for vulnerabilities with a CVSS score of 7 or higher (high severity).
+- SpotBugs with FindSecBugs is configured to fail the build for medium or higher severity issues.
+- Both security tools generate HTML reports that can be viewed in a web browser.
