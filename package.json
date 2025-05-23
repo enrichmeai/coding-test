@@ -10,7 +10,7 @@
     "eject": "react-scripts eject",
     "postman": "newman run postman/weather-api-postman-collection.json --global-var \"host=127.0.0.1\"",
     "build:react": "react-scripts build && npm run copy-build",
-    "copy-build": "rm -rf src/main/resources/static/static && mkdir -p src/main/resources/static/static && cp -r build/static/* src/main/resources/static/static/"
+    "copy-build": "rm -rf src/main/resources/static/static && mkdir -p src/main/resources/static/static && cp -r build/static/* src/main/resources/static/static/ && cp build/index.html src/main/resources/static/ && cp build/manifest.json src/main/resources/static/"
   },
   "dependencies": {
     "react": "^18.2.0",

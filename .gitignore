@@ -82,6 +82,13 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
+### Build Artifacts ###
+# Generated static files
+src/main/resources/static/static/
+src/main/resources/static/index.html
+src/main/resources/static/manifest.json
+src/main/resources/static/asset-manifest.json
+
 ### Large Files ###
 # Log files
 *.log
